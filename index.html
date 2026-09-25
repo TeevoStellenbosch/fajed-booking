@@ -153,49 +153,94 @@
   .login-error.show { display: block; }
   .footer { text-align: center; margin-top: 3rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: #bbb; }
 
-  /* Date overrides */
-  .date-override-row {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr auto;
+  /* WEEK PLANNER */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .week-nav button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    letter-spacing: 0;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    flex-shrink: 0;
+  }
+  .week-nav button:hover { background: var(--gold); color: var(--white); }
+  .week-nav .week-label {
+    flex: 1;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .week-nav .week-label small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+    color: var(--grey);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .week-hint {
+    font-size: 0.72rem;
+    color: var(--grey);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .week-day-row {
+    display: flex;
     gap: 0.5rem;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.6rem 0;
     border-bottom: 1px solid var(--light-grey);
   }
-  .date-override-row:last-of-type { border-bottom: none; }
-  .date-override-row input[type="date"] {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.85rem;
-    border-radius: 8px;
+  .week-day-row:last-of-type { border-bottom: none; }
+  .week-day-row label {
+    min-width: 85px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
   }
-  .date-override-row input[type="text"] {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.8rem;
+  .week-day-row input {
+    flex: 1;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.85rem;
     border-radius: 8px;
     text-align: left;
   }
-  .date-override-row button {
-    width: auto;
-    margin: 0;
-    padding: 0.5rem 0.7rem;
-    font-size: 0.7rem;
+  .week-day-row .day-status {
+    font-size: 0.65rem;
+    font-weight: 700;
     letter-spacing: 0.5px;
-    background: var(--red-soft);
-    color: var(--red);
-    border-radius: 8px;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
   }
-  .date-override-row button:hover { background: #f9d7d4; color: var(--red); }
-
-  .add-date-btn {
-    background: var(--cream);
-    color: var(--ink);
-    border: 1.5px dashed var(--light-grey);
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    padding: 0.7rem;
-    margin-top: 0.75rem;
+  .week-day-row .day-status.closed { background: var(--red-soft); color: var(--red); }
+  .week-day-row .day-status.open { background: var(--green-soft); color: var(--green); }
+  .week-day-row.customized label::after {
+    content: ' ●';
+    color: var(--gold);
+    font-size: 0.7rem;
   }
-  .add-date-btn:hover { background: var(--white); border-color: var(--ink); color: var(--ink); }
 
   .popup-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden; }
   .popup-overlay.show { opacity: 1; pointer-events: auto; }
@@ -240,6 +285,7 @@
     .slot-time { font-size: 1.4rem; }
     .service-price { font-size: 1.3rem; }
     .total-amount { font-size: 1.7rem; }
+    .week-day-row label { min-width: 70px; font-size: 0.75rem; }
   }
 </style>
 </head>
@@ -322,7 +368,6 @@
         <div class="admin-tab active" onclick="showTab('bookings', this)">Bookings</div>
         <div class="admin-tab" onclick="showTab('prices', this)">Prices</div>
         <div class="admin-tab" onclick="showTab('schedule', this)">Weekly</div>
-        <div class="admin-tab" onclick="showTab('dates', this)">Dates</div>
       </div>
       <div class="admin-tab-content active" id="tab-bookings">
         <div class="stats-grid">
@@ -341,15 +386,18 @@
         <button onclick="savePrices()" class="admin-save">Save Prices</button>
       </div>
       <div class="admin-tab-content" id="tab-schedule">
-        <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Your default weekly hours. Edit times (24h, comma-separated). Empty = closed.</p>
-        <div id="schedule-editor"></div>
-        <button onclick="saveSchedule()" class="admin-save">Save Weekly Hours</button>
-      </div>
-      <div class="admin-tab-content" id="tab-dates">
-        <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Override specific dates. <strong>Empty hours = closed</strong>. Otherwise, only those times are available that day.</p>
-        <div id="date-overrides"></div>
-        <button onclick="addDateOverride()" class="add-date-btn">+ Add a date</button>
-        <button onclick="saveDateOverrides()" class="admin-save">Save Overrides</button>
+        <div class="week-nav">
+          <button onclick="changeWeek(-1)">←</button>
+          <div class="week-label" id="week-label">
+            Loading…
+            <small id="week-sub">Default weekly hours</small>
+          </div>
+          <button onclick="changeWeek(1)">→</button>
+        </div>
+        <p class="week-hint" id="week-hint">Edit this week's hours. Leave a day empty to close it.</p>
+        <div id="week-schedule-editor"></div>
+        <button onclick="saveWeekSchedule()" class="admin-save">Save This Week</button>
+        <button onclick="resetWeekToDefault()" style="background:var(--cream);color:var(--ink);border:1.5px solid var(--light-grey);font-size:0.9rem;letter-spacing:1.5px;margin-top:0.5rem;">Reset this week to default</button>
       </div>
     </div>
   </div>
@@ -400,34 +448,58 @@
   const DEFAULT_SCHEDULE = { 0: [], 1: [], 2: ['09:00', '10:00'], 3: ['09:00'], 4: ['09:00','10:00','11:00','12:00','13:00','14:00','15:00'], 5: ['13:00','14:00','15:00','16:00'], 6: ['09:00','10:00','11:00','12:00','13:00'] };
   const SPECIAL_DAYS = [4, 5];
   const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const DAY_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
   let SERVICES = [...DEFAULT_SERVICES];
   let SCHEDULE = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
-  let DATE_OVERRIDES = {}; // { "2026-12-25": [], "2026-10-15": ["09:00","10:00"] }
+  let WEEK_OVERRIDES = {}; // { "2026-09-22": { 0: [], 1: ["09:00","10:00"], ... } }  keyed by Monday's date
+  let currentWeekStart = null;
   let lastBooking = null;
   let popupTimer = null;
 
+  // ============================================================
+  // WEEK HELPERS
+  // ============================================================
+  function getMonday(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day; // Monday = 1; Sunday wraps back
+    d.setDate(d.getDate() + diff);
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  function dateKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function formatWeekRange(monday) {
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const fmt = d => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    return `${fmt(monday)} – ${fmt(sunday)}`;
+  }
+
   function slotsForDate(dateStr) {
     const [y, m, d] = dateStr.split('-').map(Number);
-    const dow = new Date(y, m - 1, d).getDay();
+    const dt = new Date(y, m - 1, d);
+    const dow = dt.getDay();
+    const monday = getMonday(dt);
+    const mondayKey = dateKey(monday);
 
-    // Check date overrides first
-    let slots;
-    if (Object.prototype.hasOwnProperty.call(DATE_OVERRIDES, dateStr)) {
-      slots = DATE_OVERRIDES[dateStr] || [];
-    } else {
-      slots = SCHEDULE[dow] || [];
+    // Check week override first
+    if (Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES, mondayKey)) {
+      const weekData = WEEK_OVERRIDES[mondayKey];
+      if (Object.prototype.hasOwnProperty.call(weekData, dow)) {
+        const slots = weekData[dow] || [];
+        return { slots, dayName: DAY_NAMES[dow], dow, isClosed: !slots.length, isSpecial: SPECIAL_DAYS.includes(dow), isOverride: true };
+      }
     }
 
-    return {
-      slots: slots,
-      dayName: DAY_NAMES[dow],
-      dow: dow,
-      isClosed: !slots.length,
-      isSpecial: SPECIAL_DAYS.includes(dow) && !Object.prototype.hasOwnProperty.call(DATE_OVERRIDES, dateStr),
-      isOverride: Object.prototype.hasOwnProperty.call(DATE_OVERRIDES, dateStr)
-    };
+    // Fallback to default weekly
+    const slots = SCHEDULE[dow] || [];
+    return { slots, dayName: DAY_NAMES[dow], dow, isClosed: !slots.length, isSpecial: SPECIAL_DAYS.includes(dow), isOverride: false };
   }
+
   function endTime(start) {
     const [h, m] = start.split(':').map(Number);
     const end = new Date(); end.setHours(h + 1, m, 0, 0);
@@ -462,17 +534,19 @@
   const today = new Date().toISOString().slice(0, 10);
   dateInput.value = today; dateInput.min = today; dateInput.onchange = loadSlots;
 
+  currentWeekStart = getMonday(new Date());
+
   async function loadSettings() {
     try {
-      const { data, error } = await db.from('settings').select('*').in('id', ['services', 'schedule', 'date_overrides']);
+      const { data, error } = await db.from('settings').select('*').in('id', ['services', 'schedule', 'week_overrides']);
       if (error) console.warn('Settings load error:', error);
       else if (data) {
         const svc = data.find(r => r.id === 'services');
         const sch = data.find(r => r.id === 'schedule');
-        const dov = data.find(r => r.id === 'date_overrides');
+        const wk = data.find(r => r.id === 'week_overrides');
         if (svc && Array.isArray(svc.value)) SERVICES = svc.value;
         if (sch && sch.value) SCHEDULE = sch.value;
-        if (dov && dov.value) DATE_OVERRIDES = dov.value;
+        if (wk && wk.value) WEEK_OVERRIDES = wk.value;
       }
     } catch (e) { console.warn('Using defaults'); }
     renderHoursDisplay();
@@ -480,12 +554,13 @@
 
   function renderHoursDisplay() {
     hoursDisplay.innerHTML = '';
-    for (let i = 0; i < 7; i++) {
-      const slots = SCHEDULE[i] || [];
+    for (let i = 1; i <= 7; i++) {
+      const dow = i % 7;
+      const slots = SCHEDULE[dow] || [];
       let timeText;
       if (!slots.length) timeText = '<span class="closed">Closed</span>';
       else timeText = `<span class="time">${slots[0]} – ${endTime(slots[slots.length-1])}</span>`;
-      hoursDisplay.innerHTML += `<div class="row"><span class="day">${DAY_NAMES[i]}</span>${timeText}</div>`;
+      hoursDisplay.innerHTML += `<div class="row"><span class="day">${DAY_NAMES[dow]}</span>${timeText}</div>`;
     }
   }
 
@@ -619,7 +694,7 @@
 
   function addToCalendar() {
     if (!lastBooking) return;
-    const { dayName, date, range, service, price } = lastBooking;
+    const { date, range, service, price } = lastBooking;
     const [year, month, day] = date.split('-').map(Number);
     const parts = range.split('–').map(s => s.trim());
     const [startH, startM] = parts[0].split(':').map(Number);
@@ -812,80 +887,143 @@
     el.classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
     if (name === 'prices') renderPriceEditor();
-    if (name === 'schedule') renderScheduleEditor();
+    if (name === 'schedule') renderWeekPlanner();
     if (name === 'bookings') renderAdmin();
-    if (name === 'dates') renderDateOverrides();
   }
 
   // ============================================================
-  // DATE OVERRIDES
+  // WEEK PLANNER
   // ============================================================
-  function renderDateOverrides() {
-    const container = document.getElementById('date-overrides');
-    const todayStr = new Date().toISOString().slice(0, 10);
-    const entries = Object.entries(DATE_OVERRIDES)
-      .filter(([d]) => d >= todayStr)
-      .sort(([a], [b]) => a.localeCompare(b));
+  function changeWeek(delta) {
+    currentWeekStart.setDate(currentWeekStart.getDate() + delta * 7);
+    renderWeekPlanner();
+  }
 
-    if (!entries.length) {
-      container.innerHTML = '<p style="font-size:0.85rem;color:#999;font-style:italic;padding:0.5rem 0;">No overrides yet. Click below to add one.</p>';
-      return;
+  function renderWeekPlanner() {
+    const mondayKey = dateKey(currentWeekStart);
+    const label = document.getElementById('week-label');
+    const sub = document.getElementById('week-sub');
+    const hint = document.getElementById('week-hint');
+    const editor = document.getElementById('week-schedule-editor');
+
+    // Is this the default week (no override)?
+    const hasOverride = Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES, mondayKey);
+
+    label.innerHTML = `${formatWeekRange(currentWeekStart)} <small>${hasOverride ? 'Custom hours for this week' : 'Using default hours'}</small>`;
+
+    // Is it the current week?
+    const todayMonday = getMonday(new Date());
+    const isCurrentWeek = mondayKey === dateKey(todayMonday);
+
+    hint.textContent = isCurrentWeek
+      ? "Editing THIS week — changes apply immediately."
+      : "Editing a future week. Save to apply.";
+
+    // What schedule are we showing?
+    let weekSchedule;
+    if (hasOverride) weekSchedule = WEEK_OVERRIDES[mondayKey];
+    else {
+      weekSchedule = {};
+      for (let dow = 0; dow < 7; dow++) weekSchedule[dow] = [...(SCHEDULE[dow] || [])];
     }
 
-    container.innerHTML = '';
-    entries.forEach(([date, slots]) => {
+    editor.innerHTML = '';
+
+    // Show Monday → Sunday
+    for (let i = 0; i < 7; i++) {
+      const dow = (1 + i) % 7; // Monday=1, ... Sunday=0
+      const slots = weekSchedule[dow] || [];
+      const isClosed = slots.length === 0;
+      const isCustomized = hasOverride && Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES[mondayKey], dow);
+
       const row = document.createElement('div');
-      row.className = 'date-override-row';
+      row.className = 'week-day-row' + (isCustomized ? ' customized' : '');
       row.innerHTML = `
-        <input type="date" value="${date}" onchange="updateOverrideDate('${date}', this.value)" />
-        <input type="text" value="${(slots || []).join(',')}" placeholder="Empty = closed" onchange="updateOverrideSlots('${date}', this.value)" />
-        <button onclick="removeOverride('${date}')">✕</button>
+        <label>${DAY_NAMES[dow]}</label>
+        <input type="text" id="week-day-${dow}" value="${slots.join(',')}" placeholder="Empty = closed" />
+        <span class="day-status ${isClosed ? 'closed' : 'open'}">${isClosed ? 'Closed' : 'Open'}</span>
       `;
-      container.appendChild(row);
-    });
-  }
+      editor.appendChild(row);
 
-  function addDateOverride() {
-    const todayStr = new Date().toISOString().slice(0, 10);
-    if (Object.prototype.hasOwnProperty.call(DATE_OVERRIDES, todayStr)) {
-      alert('That date is already added.');
-      return;
+      // Live update the status badge as they type
+      const input = row.querySelector('input');
+      const status = row.querySelector('.day-status');
+      input.addEventListener('input', () => {
+        const hasValue = input.value.trim().length > 0;
+        status.className = 'day-status ' + (hasValue ? 'open' : 'closed');
+        status.textContent = hasValue ? 'Open' : 'Closed';
+      });
     }
-    DATE_OVERRIDES[todayStr] = [];
-    renderDateOverrides();
   }
 
-  function removeOverride(date) {
-    if (!confirm(`Remove override for ${date}?`)) return;
-    delete DATE_OVERRIDES[date];
-    renderDateOverrides();
-  }
+  async function saveWeekSchedule() {
+    const mondayKey = dateKey(currentWeekStart);
 
-  function updateOverrideDate(oldDate, newDate) {
-    if (!newDate) { delete DATE_OVERRIDES[oldDate]; renderDateOverrides(); return; }
-    const slots = DATE_OVERRIDES[oldDate] || [];
-    delete DATE_OVERRIDES[oldDate];
-    DATE_OVERRIDES[newDate] = slots;
-    renderDateOverrides();
-  }
+    // Build week override
+    const weekData = {};
+    for (let i = 0; i < 7; i++) {
+      const dow = (1 + i) % 7;
+      const raw = document.getElementById('week-day-' + dow).value.trim();
+      weekData[dow] = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
+    }
 
-  function updateOverrideSlots(date, raw) {
-    const slots = raw.split(',').map(s => s.trim()).filter(Boolean);
-    DATE_OVERRIDES[date] = slots;
-  }
+    // Compare to default — if identical, remove override (cleaner)
+    let isDefault = true;
+    for (let dow = 0; dow < 7; dow++) {
+      const def = (SCHEDULE[dow] || []).join(',');
+      const cur = (weekData[dow] || []).join(',');
+      if (def !== cur) { isDefault = false; break; }
+    }
 
-  async function saveDateOverrides() {
+    if (isDefault) {
+      delete WEEK_OVERRIDES[mondayKey];
+    } else {
+      WEEK_OVERRIDES[mondayKey] = weekData;
+    }
+
+    // Save to Supabase
     const { error } = await db.from('settings').upsert({
-      id: 'date_overrides',
-      value: DATE_OVERRIDES,
+      id: 'week_overrides',
+      value: WEEK_OVERRIDES,
       updated_at: new Date().toISOString()
     });
-    if (error) { alert('Could not save overrides.'); console.error(error); return; }
-    alert('Date overrides saved!');
+
+    if (error) {
+      alert('Could not save. Check the console for details.');
+      console.error('Save week error:', error);
+      return;
+    }
+
+    alert('Week saved!');
+    renderWeekPlanner();
+    loadSlots();
+  }
+
+  async function resetWeekToDefault() {
+    const mondayKey = dateKey(currentWeekStart);
+    if (!Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES, mondayKey)) {
+      alert('This week is already using the default hours.');
+      return;
+    }
+    if (!confirm('Reset this week to default hours?')) return;
+
+    delete WEEK_OVERRIDES[mondayKey];
+
+    const { error } = await db.from('settings').upsert({
+      id: 'week_overrides',
+      value: WEEK_OVERRIDES,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) { alert('Could not save.'); console.error(error); return; }
+
+    alert('Reset to default!');
+    renderWeekPlanner();
+    loadSlots();
   }
 
   // ============================================================
-  // ADMIN BOOKINGS / PRICES / SCHEDULE
+  // ADMIN — BOOKINGS / PRICES
   // ============================================================
   async function renderAdmin() {
     const list = document.getElementById('admin-list');
@@ -966,27 +1104,6 @@
     const { error } = await db.from('settings').upsert({ id: 'services', value: updated, updated_at: new Date().toISOString() });
     if (error) { alert('Could not save prices.'); console.error(error); return; }
     SERVICES = updated; alert('Prices saved!');
-  }
-  function renderScheduleEditor() {
-    const editor = document.getElementById('schedule-editor');
-    editor.innerHTML = '';
-    for (let i = 0; i < 7; i++) {
-      const slots = SCHEDULE[i] || [];
-      const row = document.createElement('div');
-      row.className = 'edit-row';
-      row.innerHTML = `<label>${DAY_NAMES[i]}</label><input type="text" id="sched-${i}" value="${slots.join(',')}" placeholder="09:00,10:00" style="width:180px;text-align:left;font-size:0.8rem;" />`;
-      editor.appendChild(row);
-    }
-  }
-  async function saveSchedule() {
-    const updated = {};
-    for (let i = 0; i < 7; i++) {
-      const raw = document.getElementById('sched-' + i).value.trim();
-      updated[i] = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
-    }
-    const { error } = await db.from('settings').upsert({ id: 'schedule', value: updated, updated_at: new Date().toISOString() });
-    if (error) { alert('Could not save schedule.'); console.error(error); return; }
-    SCHEDULE = updated; alert('Schedule saved!'); renderHoursDisplay();
   }
   function showMsg(text, type) { msg.textContent = text; msg.className = 'show ' + type; }
   function hideMsg() { msg.className = ''; msg.textContent = ''; }
