@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FAJED — Book Your Chair</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #f7f4ee; --white: #ffffff; --ink: #111111;
+    --grey: #6b6b6b; --light-grey: #e5e2db; --gold: #b8945f;
+    --green: #2e7d32; --green-soft: #e8f5e9;
+    --red: #c62828; --red-soft: #fdecea;
+    --amber: #f57c00; --amber-soft: #fff3e0;
+  }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem 4rem; -webkit-font-smoothing: antialiased; }
+  .app { width: 100%; max-width: 520px; }
+  .header { text-align: center; margin-bottom: 1rem; }
+  .logo-wrap { display: inline-flex; align-items: center; justify-content: center; width: 110px; height: 110px; margin-bottom: 1rem; }
+  .logo-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .logo-fallback { display: none; width: 90px; height: 90px; border-radius: 50%; background: var(--ink); color: var(--cream); font-size: 2.5rem; align-items: center; justify-content: center; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; font-weight: 400; letter-spacing: 6px; line-height: 1; color: var(--ink); margin-bottom: 0.35rem; }
+  .est { font-size: 0.7rem; letter-spacing: 3px; font-weight: 700; color: var(--grey); text-transform: uppercase; margin-bottom: 0.5rem; }
+  .tagline { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 4px; color: var(--gold); }
+  .rule { height: 1px; background: var(--light-grey); margin: 1.5rem 0; position: relative; }
+  .rule::after { content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%); width: 40px; height: 7px; background: var(--cream); border-left: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--ink); margin-bottom: 0.75rem; display: flex; align-items: baseline; justify-content: space-between; }
+  .section-title small { font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 1.5px; color: var(--grey); font-weight: 600; text-transform: uppercase; }
+  .hours-card { background: var(--white); border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .hours-card summary { cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 2px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .hours-card summary::-webkit-details-marker { display: none; }
+  .hours-card summary::after { content: '+'; font-size: 1.3rem; color: var(--gold); }
+  .hours-card[open] summary::after { content: '−'; }
+  .hours-list { margin-top: 1rem; line-height: 1.9; font-size: 0.88rem; color: #444; }
+  .hours-list .row { display: flex; justify-content: space-between; padding: 0.15rem 0; }
+  .hours-list .day { color: var(--grey); font-weight: 500; }
+  .hours-list .time { font-weight: 600; }
+  .hours-list .closed { color: #bbb; text-decoration: line-through; font-weight: 400; }
+  .date-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; margin-bottom: 0.6rem; display: block; }
+  input[type="date"], input[type="text"], input[type="tel"], input[type="password"], input[type="number"] { width: 100%; padding: 1rem 1.1rem; font-size: 1.05rem; font-family: 'Inter', sans-serif; font-weight: 500; border: 1.5px solid var(--light-grey); border-radius: 12px; background: var(--white); color: var(--ink); transition: all 0.15s; -webkit-appearance: none; appearance: none; }
+  input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+  input::placeholder { color: #aaa; font-weight: 400; }
+  input[type="date"] { font-weight: 600; cursor: pointer; }
+  .slots-section { margin: 1.75rem 0 0.5rem; }
+  .legend { display: flex; gap: 1.25rem; font-size: 0.75rem; color: var(--grey); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.85rem; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.green { background: var(--green); }
+  .dot.grey { background: #ccc; }
+  .slot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
+  .slot { position: relative; padding: 1rem 0.5rem 1.15rem; text-align: center; border-radius: 12px; border: 1.5px solid var(--light-grey); background: var(--white); color: var(--ink); user-select: none; transition: all 0.12s; overflow: hidden; }
+  .slot-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1.5px; line-height: 1; margin-bottom: 0.25rem; }
+  .slot-duration { font-size: 0.7rem; color: var(--grey); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .slot.available { cursor: pointer; }
+  .slot.available:hover { border-color: var(--green); background: var(--green-soft); transform: translateY(-2px); }
+  .slot.available:active { transform: translateY(0); }
+  .slot.available .slot-duration { color: var(--green); }
+  .slot.taken { background: #f0eee9; color: #999; border-color: #ede9e0; cursor: not-allowed; padding-bottom: 1.65rem; }
+  .slot.taken .slot-time { text-decoration: line-through; text-decoration-thickness: 1.5px; opacity: 0.6; }
+  .slot.taken .slot-duration { opacity: 0.5; }
+  .slot.taken .booked-mark { position: absolute; bottom: 0; left: 0; right: 0; background: var(--red); color: var(--white); font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; letter-spacing: 1.5px; padding: 3px 0; text-align: center; font-weight: 400; }
+  .slot.selected { background: var(--ink); color: var(--cream); border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .slot.selected .slot-duration { color: var(--gold); }
+  .empty-msg { grid-column: 1 / -1; color: var(--grey); padding: 1.75rem 0; text-align: center; font-style: italic; font-size: 0.95rem; }
+  .loading-slots { grid-column: 1 / -1; color: var(--grey); padding: 1.75rem 0; text-align: center; font-style: italic; font-size: 0.95rem; }
+  .form-area { display: none; margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--light-grey); animation: fadeIn 0.3s ease; }
+  .form-area.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .form-area .field-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; display: block; margin-bottom: 0.5rem; }
+  .selected-badge { display: inline-block; background: var(--ink); color: var(--cream); font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; padding: 0.35rem 0.9rem; border-radius: 8px; margin-left: 0.4rem; vertical-align: middle; }
+  .service-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; display: block; margin: 1.5rem 0 0.6rem; }
+  .service-label .special-tag { display: inline-block; background: var(--gold); color: var(--white); font-size: 0.65rem; letter-spacing: 1px; padding: 0.15rem 0.5rem; border-radius: 4px; margin-left: 0.4rem; vertical-align: middle; font-family: 'Inter', sans-serif; font-weight: 700; }
+  .service-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .service-option { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; background: var(--white); border: 1.5px solid var(--light-grey); border-radius: 12px; cursor: pointer; transition: all 0.15s; }
+  .service-option:hover { border-color: var(--gold); background: #fdfaf3; }
+  .service-option.selected { border-color: var(--ink); background: var(--ink); color: var(--cream); }
+  .service-option.selected .service-price { color: var(--gold); }
+  .service-option.selected .service-desc { color: #ccc; }
+  .service-info { flex: 1; text-align: left; }
+  .service-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+  .service-desc { font-size: 0.72rem; color: var(--grey); font-style: italic; }
+  .service-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 1px; color: var(--ink); white-space: nowrap; margin-left: 0.75rem; }
+  .service-price .was { font-size: 0.9rem; color: #999; text-decoration: line-through; margin-right: 6px; letter-spacing: 0; }
+  .total-bar { display: flex; justify-content: space-between; align-items: center; background: var(--cream); border: 1.5px dashed var(--gold); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.25rem; }
+  .total-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: var(--grey); }
+  .total-amount { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; color: var(--ink); }
+  button { width: 100%; padding: 1.1rem; margin-top: 0.5rem; font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 3px; background: var(--ink); color: var(--cream); border: none; border-radius: 12px; cursor: pointer; transition: all 0.15s; }
+  button:hover:not(:disabled) { background: var(--gold); color: var(--white); }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+  #msg { margin-top: 1rem; padding: 1rem 1.1rem; border-radius: 12px; font-weight: 600; font-size: 0.9rem; text-align: center; display: none; animation: fadeIn 0.3s ease; }
+  #msg.show { display: block; }
+  #msg.success { background: var(--green-soft); color: var(--green); border: 1px solid rgba(46, 125, 50, 0.25); }
+  #msg.error { background: var(--red-soft); color: var(--red); border: 1px solid rgba(198, 40, 40, 0.25); }
+  .policy-note { margin-top: 1rem; padding: 0.9rem 1rem; border-radius: 10px; background: var(--white); border: 1px solid var(--light-grey); font-size: 0.75rem; color: var(--grey); line-height: 1.5; }
+  .policy-note strong { color: var(--ink); }
+  .cancel-booking-link { display: block; text-align: center; margin-top: 2.5rem; color: var(--grey); font-size: 0.85rem; text-decoration: underline; cursor: pointer; letter-spacing: 0.5px; }
+  .cancel-booking-link:hover { color: var(--ink); }
+  .cancel-panel { display: none; margin-top: 1rem; background: var(--white); border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .cancel-panel.show { display: block; }
+  .cancel-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .cancel-hint { font-size: 0.82rem; color: var(--grey); margin-bottom: 1rem; }
+  .cancel-hint + input { margin-bottom: 0.75rem; }
+  .my-booking-row { padding: 0.85rem 0; border-bottom: 1px solid var(--light-grey); display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-size: 0.9rem; }
+  .my-booking-row:last-child { border-bottom: none; }
+  .my-booking-row .meta { color: var(--grey); font-size: 0.78rem; margin-top: 2px; }
+  .my-booking-row .policy-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px; padding: 0.15rem 0.5rem; border-radius: 4px; margin-top: 4px; text-transform: uppercase; }
+  .my-booking-row .policy-tag.free { background: var(--green-soft); color: var(--green); }
+  .my-booking-row .policy-tag.fee { background: var(--amber-soft); color: var(--amber); }
+  .cancel-mine-btn { background: var(--red-soft); color: var(--red); border: none; padding: 0.5rem 0.9rem; border-radius: 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; width: auto; margin: 0; font-family: 'Inter', sans-serif; }
+  .cancel-mine-btn:hover { background: #f9d7d4; }
+  .admin-link { display: block; text-align: center; margin-top: 3rem; color: #aaa; font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px; text-decoration: none; text-transform: uppercase; }
+  .admin-link:hover { color: var(--ink); }
+  .admin-panel { display: none; margin-top: 1rem; background: var(--white); border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .admin-panel.show { display: block; }
+  .admin-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 1rem; color: var(--ink); }
+  .admin-tabs { display: flex; gap: 0.2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--light-grey); flex-wrap: wrap; }
+  .admin-tab { flex: 1; min-width: 70px; padding: 0.6rem 0.3rem; cursor: pointer; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--grey); border-bottom: 2px solid transparent; transition: all 0.15s; text-align: center; background: none; border-radius: 0; margin: 0; font-family: 'Inter', sans-serif; }
+  .admin-tab:hover { color: var(--ink); }
+  .admin-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+  .admin-tab-content { display: none; }
+  .admin-tab-content.active { display: block; }
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+  .stat-card { background: var(--cream); border-radius: 12px; padding: 0.85rem 1rem; border: 1px solid var(--light-grey); }
+  .stat-card.highlight { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .stat-card.highlight .stat-label, .stat-card.highlight .stat-sub { color: #aaa; }
+  .stat-card.highlight .stat-value { color: var(--gold); }
+  .stat-label { font-size: 0.65rem; letter-spacing: 1.5px; color: var(--grey); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 1px; line-height: 1; color: var(--ink); }
+  .stat-sub { font-size: 0.68rem; color: var(--grey); margin-top: 0.2rem; letter-spacing: 0.5px; }
+  .popular-bar { background: linear-gradient(135deg, #fdfaf3, #f7f0e0); border: 1px solid var(--gold); border-radius: 10px; padding: 0.7rem 1rem; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+  .pop-label { color: var(--grey); font-weight: 600; letter-spacing: 0.5px; font-size: 0.7rem; text-transform: uppercase; }
+  .pop-value { color: var(--ink); font-weight: 700; font-size: 0.85rem; text-align: right; }
+  .booking-row { padding: 0.85rem 0; border-bottom: 1px solid var(--light-grey); display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-size: 0.9rem; }
+  .booking-row:last-child { border-bottom: none; }
+  .booking-row strong { font-size: 0.95rem; }
+  .booking-row .meta { color: var(--grey); font-size: 0.78rem; margin-top: 2px; }
+  .booking-row .svc { color: var(--gold); font-weight: 600; font-size: 0.78rem; margin-top: 2px; }
+  .cancel-btn { background: var(--red-soft); color: var(--red); border: none; padding: 0.4rem 0.75rem; border-radius: 8px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; width: auto; margin: 0; font-family: 'Inter', sans-serif; }
+  .cancel-btn:hover { background: #f9d7d4; }
+  .edit-row { display: flex; gap: 0.5rem; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid var(--light-grey); flex-wrap: wrap; }
+  .edit-row:last-child { border-bottom: none; }
+  .edit-row label { flex: 1; min-width: 140px; font-size: 0.82rem; font-weight: 500; }
+  .edit-row input { width: 80px; padding: 0.5rem 0.6rem; font-size: 0.9rem; text-align: center; }
+  .edit-row .field-hint { font-size: 0.62rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .admin-save { margin-top: 1rem; padding: 0.9rem; font-size: 1.1rem; letter-spacing: 2px; }
+  .login-form { padding: 1rem 0; }
+  .login-form input { margin-bottom: 0.75rem; }
+  .login-error { color: var(--red); font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+  .login-error.show { display: block; }
+  .footer { text-align: center; margin-top: 3rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: #bbb; }
+
+  /* WEEK PLANNER */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .week-nav button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    letter-spacing: 0;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    flex-shrink: 0;
+  }
+  .week-nav button:hover { background: var(--gold); color: var(--white); }
+  .week-nav .week-label {
+    flex: 1;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .week-nav .week-label small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+    color: var(--grey);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .week-hint {
+    font-size: 0.72rem;
+    color: var(--grey);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .week-day-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--light-grey);
+  }
+  .week-day-row:last-of-type { border-bottom: none; }
+  .week-day-row label {
+    min-width: 85px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .week-day-row input {
+    flex: 1;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    text-align: left;
+  }
+  .week-day-row .day-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .week-day-row .day-status.closed { background: var(--red-soft); color: var(--red); }
+  .week-day-row .day-status.open { background: var(--green-soft); color: var(--green); }
+  .week-day-row.customized label::after {
+    content: ' ●';
+    color: var(--gold);
+    font-size: 0.7rem;
+  }
+
+  .popup-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden; }
+  .popup-overlay.show { opacity: 1; pointer-events: auto; }
+  .popup-card { position: relative; z-index: 2; background: var(--cream); border-radius: 24px; padding: 2.5rem 2rem 2rem; text-align: center; max-width: 340px; width: 100%; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3); transform: translateY(40px) scale(0.95); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease; }
+  .popup-overlay.show .popup-card { transform: translateY(0) scale(1); opacity: 1; }
+  .popup-check { width: 84px; height: 84px; margin: 0 auto 1.25rem; position: relative; }
+  .popup-check::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--green-soft); transform: scale(0); z-index: 0; }
+  .popup-overlay.show .popup-check::before { animation: pulseRing 0.6s ease-out 0.2s forwards; }
+  @keyframes pulseRing { to { transform: scale(1.15); opacity: 0; } }
+  .popup-check svg { width: 100%; height: 100%; position: relative; z-index: 1; }
+  .check-circle { stroke: var(--green); stroke-width: 2.5; stroke-dasharray: 151; stroke-dashoffset: 151; stroke-linecap: round; }
+  .check-mark { stroke: var(--green); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 48; stroke-dashoffset: 48; }
+  .popup-overlay.show .check-circle { animation: drawCircle 0.5s ease-out forwards; }
+  .popup-overlay.show .check-mark { animation: drawCheck 0.3s ease-out 0.45s forwards; }
+  @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+  @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+  .popup-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; color: var(--ink); margin-bottom: 0.35rem; opacity: 0; transform: translateY(8px); }
+  .popup-sub { font-size: 0.95rem; font-weight: 600; color: var(--grey); margin-bottom: 0.35rem; opacity: 0; transform: translateY(8px); }
+  .popup-service { font-size: 0.85rem; color: var(--gold); font-weight: 700; margin-bottom: 0.5rem; opacity: 0; transform: translateY(8px); }
+  .popup-policy { font-size: 0.72rem; color: var(--grey); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--light-grey); opacity: 0; transform: translateY(8px); line-height: 1.5; }
+  .popup-hint { font-size: 0.7rem; color: #aaa; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; opacity: 0; transform: translateY(8px); margin-top: 0.75rem; }
+  .popup-overlay.show .popup-title { animation: fadeUp 0.4s ease-out 0.7s forwards; }
+  .popup-overlay.show .popup-sub { animation: fadeUp 0.4s ease-out 0.85s forwards; }
+  .popup-overlay.show .popup-service { animation: fadeUp 0.4s ease-out 0.95s forwards; }
+  .popup-overlay.show .popup-policy { animation: fadeUp 0.4s ease-out 1.05s forwards; }
+  .popup-overlay.show .popup-hint { animation: fadeUp 0.4s ease-out 1.5s forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .share-btn { background: #25d366; color: white; margin-top: 1.25rem; font-size: 1.05rem; letter-spacing: 1.5px; padding: 0.9rem; opacity: 0; transform: translateY(8px); }
+  .share-btn:hover { background: #1da851; color: white; transform: translateY(-1px); }
+  .popup-overlay.show .share-btn { animation: fadeUp 0.4s ease-out 1.15s forwards; }
+  .calendar-btn { background: var(--ink); color: var(--cream); margin-top: 0.5rem; font-size: 1rem; letter-spacing: 1.5px; padding: 0.85rem; opacity: 0; transform: translateY(8px); }
+  .calendar-btn:hover { background: var(--gold); color: var(--white); transform: translateY(-1px); }
+  .popup-overlay.show .calendar-btn { animation: fadeUp 0.4s ease-out 1.25s forwards; }
+  .close-btn { background: transparent; color: var(--grey); border: 1.5px solid var(--light-grey); margin-top: 0.5rem; font-size: 1rem; letter-spacing: 2px; padding: 0.7rem; opacity: 0; transform: translateY(8px); }
+  .close-btn:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .popup-overlay.show .close-btn { animation: fadeUp 0.4s ease-out 1.35s forwards; }
+  .confetti-piece { pointer-events: none; }
+  @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+  @media (max-width: 400px) {
+    h1 { font-size: 2.4rem; letter-spacing: 4px; }
+    .logo-wrap { width: 90px; height: 90px; }
+    .slot-time { font-size: 1.4rem; }
+    .service-price { font-size: 1.3rem; }
+    .total-amount { font-size: 1.7rem; }
+    .week-day-row label { min-width: 70px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="FAJED logo" class="logo-img" onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='flex';" />
+      <div class="logo-fallback">💈</div>
+    </div>
+    <h1>FAJED</h1>
+    <div class="est">Est. 2020</div>
+    <div class="tagline">Book Your Chair</div>
+  </div>
+
+  <div class="rule"></div>
+
+  <details class="hours-card">
+    <summary>Opening Hours</summary>
+    <div class="hours-list" id="hours-display"><div class="row"><span class="day">Loading…</span></div></div>
+  </details>
+
+  <label class="date-label" for="date">Pick a date</label>
+  <input type="date" id="date" />
+
+  <div class="slots-section">
+    <div class="section-title">Times available <small id="day-label"></small></div>
+    <div class="legend">
+      <span><i class="dot green"></i>Available</span>
+      <span><i class="dot grey"></i>Booked</span>
+    </div>
+    <div id="slots" class="slot-grid"><div class="loading-slots">Loading…</div></div>
+  </div>
+
+  <div class="form-area" id="form-area">
+    <label class="field-label">Your details <span class="selected-badge" id="selected-time"></span></label>
+    <div class="service-label">What would you like? <span class="special-tag" id="special-tag" style="display:none;">SPECIALS</span></div>
+    <div class="service-list" id="service-list"></div>
+    <div class="total-bar" id="total-bar" style="display:none;">
+      <div class="total-label">Total</div>
+      <div class="total-amount" id="total-amount">R0</div>
+    </div>
+    <input type="text" id="name" placeholder="Full name" autocomplete="name" style="margin-top:1.25rem;" />
+    <input type="tel" id="phone" placeholder="WhatsApp number (e.g. 27821234567)" autocomplete="tel" />
+
+    <div class="policy-note">
+      <strong>Cancellation policy:</strong> Free up to 24 hours before your appointment. Within 24 hours — <strong>R30 fee</strong>.
+    </div>
+
+    <button id="bookBtn" onclick="book()">Confirm Booking</button>
+  </div>
+
+  <div id="msg"></div>
+
+  <a href="#" class="cancel-booking-link" onclick="toggleCancelPanel(event)">Need to cancel? Tap here</a>
+  <div class="cancel-panel" id="cancel-panel">
+    <h3>Find Your Booking</h3>
+    <p class="cancel-hint">Enter the WhatsApp number you used when booking.</p>
+    <input type="tel" id="cancel-phone" placeholder="e.g. 27821234567" />
+    <button onclick="findMyBookings()" class="admin-save">Find My Bookings</button>
+    <div id="cancel-results"></div>
+  </div>
+
+  <a href="#" class="admin-link" onclick="toggleAdmin(event)">Shop owner · Admin panel</a>
+  <div class="admin-panel" id="admin-panel">
+    <div id="admin-login">
+      <h3>Admin Login</h3>
+      <div class="login-form">
+        <input type="password" id="admin-password" placeholder="Enter admin password" />
+        <button onclick="adminLogin()" class="admin-save">Log In</button>
+        <div class="login-error" id="login-error">Wrong password. Try again.</div>
+      </div>
+    </div>
+    <div id="admin-content" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+        <h3 style="margin:0;">Admin Panel</h3>
+        <button onclick="adminLogout()" style="width:auto;padding:0.4rem 0.75rem;font-size:0.75rem;letter-spacing:1px;margin:0;">Logout</button>
+      </div>
+      <div class="admin-tabs">
+        <div class="admin-tab active" onclick="showTab('bookings', this)">Bookings</div>
+        <div class="admin-tab" onclick="showTab('prices', this)">Prices</div>
+        <div class="admin-tab" onclick="showTab('schedule', this)">Weekly</div>
+      </div>
+      <div class="admin-tab-content active" id="tab-bookings">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="stat-month-count">—</div><div class="stat-sub" id="stat-month-label">—</div></div>
+          <div class="stat-card highlight"><div class="stat-label">Earnings</div><div class="stat-value" id="stat-month-earnings">—</div><div class="stat-sub">this month</div></div>
+          <div class="stat-card"><div class="stat-label">Today</div><div class="stat-value" id="stat-today-count">—</div><div class="stat-sub">bookings</div></div>
+          <div class="stat-card"><div class="stat-label">All Time</div><div class="stat-value" id="stat-total-count">—</div><div class="stat-sub">bookings</div></div>
+        </div>
+        <div class="popular-bar"><span class="pop-label">Most popular</span><span class="pop-value" id="stat-popular">—</span></div>
+        <h4 style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;color:var(--grey);margin:1.25rem 0 0.5rem;">Upcoming Bookings</h4>
+        <div id="admin-list"><p style="color:#999;font-style:italic;">Loading…</p></div>
+      </div>
+      <div class="admin-tab-content" id="tab-prices">
+        <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Normal price and Special (Thu/Fri). Leave blank to keep normal.</p>
+        <div id="price-editor"></div>
+        <button onclick="savePrices()" class="admin-save">Save Prices</button>
+      </div>
+      <div class="admin-tab-content" id="tab-schedule">
+        <div class="week-nav">
+          <button onclick="changeWeek(-1)">←</button>
+          <div class="week-label" id="week-label">
+            Loading…
+            <small id="week-sub">Default weekly hours</small>
+          </div>
+          <button onclick="changeWeek(1)">→</button>
+        </div>
+        <p class="week-hint" id="week-hint">Edit this week's hours. Leave a day empty to close it.</p>
+        <div id="week-schedule-editor"></div>
+        <button onclick="saveWeekSchedule()" class="admin-save">Save This Week</button>
+        <button onclick="resetWeekToDefault()" style="background:var(--cream);color:var(--ink);border:1.5px solid var(--light-grey);font-size:0.9rem;letter-spacing:1.5px;margin-top:0.5rem;">Reset this week to default</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">FAJED · EST 2020</div>
+</div>
+
+<div class="popup-overlay" id="popup">
+  <div class="popup-card">
+    <div class="popup-check">
+      <svg viewBox="0 0 52 52">
+        <circle class="check-circle" cx="26" cy="26" r="24" fill="none"/>
+        <path class="check-mark" fill="none" d="M14 27 L22 35 L38 18"/>
+      </svg>
+    </div>
+    <h2 class="popup-title">Booking Confirmed</h2>
+    <p class="popup-sub" id="popup-detail">Your slot has been reserved</p>
+    <p class="popup-service" id="popup-service"></p>
+    <p class="popup-policy">Free cancellation up to 24 hours before.<br>Within 24 hours = R30 fee.</p>
+    <button class="share-btn" onclick="sendBookingToBarber()">📱 Send Proof to FAJED</button>
+    <button class="calendar-btn" onclick="addToCalendar()">📅 Add to Calendar</button>
+    <button class="close-btn" onclick="closePopup()">Done</button>
+    <p class="popup-hint">Auto-closes in 15 seconds</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SHOP_NAME = 'FAJED';
+  const BARBER_NUMBER = '27623159253';
+  const ADMIN_PASSWORD = 'fajed2020';
+  const SUPABASE_URL = 'https://ewxvtksigbujywuckzjv.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_KloaqB1JdrvWheEomwncew_IaXeCAFa';
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const CANCEL_FREE_HOURS = 24;
+  const CANCEL_FEE = 30;
+
+  const DEFAULT_SERVICES = [
+    { id: 'cut-taper',   name: 'Normal Haircut & Taper Fades', desc: 'Classic cut with sharp taper', price: 100, special: 80  },
+    { id: 'scissor',     name: 'Scissor Work & Fade',          desc: 'Precision scissor finish',     price: 120, special: 100 },
+    { id: 'cut-beard',   name: 'Normal Haircut & Full Beard',  desc: 'Cut plus full beard sculpt',   price: 120, special: 100 },
+    { id: 'beard-only',  name: 'Beard Only',                   desc: 'Beard trim & shape',           price: 30,  special: 30  },
+    { id: 'lineup-only', name: 'Line Up Only',                 desc: 'Clean edges & hairline',       price: 30,  special: 30  },
+    { id: 'eyebrow',     name: 'Eyebrow Shape Up',             desc: 'Brow clean-up',                price: 20,  special: 20  }
+  ];
+  const DEFAULT_SCHEDULE = { 0: [], 1: [], 2: ['09:00', '10:00'], 3: ['09:00'], 4: ['09:00','10:00','11:00','12:00','13:00','14:00','15:00'], 5: ['13:00','14:00','15:00','16:00'], 6: ['09:00','10:00','11:00','12:00','13:00'] };
+  const SPECIAL_DAYS = [4, 5];
+  const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const DAY_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let SERVICES = [...DEFAULT_SERVICES];
+  let SCHEDULE = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+  let WEEK_OVERRIDES = {}; // { "2026-09-22": { 0: [], 1: ["09:00","10:00"], ... } }  keyed by Monday's date
+  let currentWeekStart = null;
+  let lastBooking = null;
+  let popupTimer = null;
+
+  // ============================================================
+  // WEEK HELPERS
+  // ============================================================
+  function getMonday(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day; // Monday = 1; Sunday wraps back
+    d.setDate(d.getDate() + diff);
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  function dateKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function formatWeekRange(monday) {
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const fmt = d => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    return `${fmt(monday)} – ${fmt(sunday)}`;
+  }
+
+  function slotsForDate(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const dow = dt.getDay();
+    const monday = getMonday(dt);
+    const mondayKey = dateKey(monday);
+
+    // Check week override first
+    if (Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES, mondayKey)) {
+      const weekData = WEEK_OVERRIDES[mondayKey];
+      if (Object.prototype.hasOwnProperty.call(weekData, dow)) {
+        const slots = weekData[dow] || [];
+        return { slots, dayName: DAY_NAMES[dow], dow, isClosed: !slots.length, isSpecial: SPECIAL_DAYS.includes(dow), isOverride: true };
+      }
+    }
+
+    // Fallback to default weekly
+    const slots = SCHEDULE[dow] || [];
+    return { slots, dayName: DAY_NAMES[dow], dow, isClosed: !slots.length, isSpecial: SPECIAL_DAYS.includes(dow), isOverride: false };
+  }
+
+  function endTime(start) {
+    const [h, m] = start.split(':').map(Number);
+    const end = new Date(); end.setHours(h + 1, m, 0, 0);
+    return `${String(end.getHours()).padStart(2,'0')}:${String(end.getMinutes()).padStart(2,'0')}`;
+  }
+  function priceFor(service, isSpecial) {
+    if (!isSpecial) return service.price;
+    return (service.special != null && !isNaN(service.special)) ? service.special : service.price;
+  }
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function hoursUntil(date, time) {
+    const [y, m, d] = date.split('-').map(Number);
+    const [h, min] = time.split(':').map(Number);
+    const appointment = new Date(y, m - 1, d, h, min, 0);
+    return (appointment - new Date()) / (1000 * 60 * 60);
+  }
+  function isFreeCancellation(date, time) { return hoursUntil(date, time) >= CANCEL_FREE_HOURS; }
+
+  const dateInput = document.getElementById('date');
+  const slotsDiv = document.getElementById('slots');
+  const formArea = document.getElementById('form-area');
+  const selectedTimeEl = document.getElementById('selected-time');
+  const dayLabel = document.getElementById('day-label');
+  const msg = document.getElementById('msg');
+  const serviceList = document.getElementById('service-list');
+  const totalBar = document.getElementById('total-bar');
+  const totalAmount = document.getElementById('total-amount');
+  const specialTag = document.getElementById('special-tag');
+  const hoursDisplay = document.getElementById('hours-display');
+  let selected = null, selectedService = null, currentDateInfo = null, takenSlots = [], isAdminLoggedIn = false;
+
+  const today = new Date().toISOString().slice(0, 10);
+  dateInput.value = today; dateInput.min = today; dateInput.onchange = loadSlots;
+
+  currentWeekStart = getMonday(new Date());
+
+  async function loadSettings() {
+    try {
+      const { data, error } = await db.from('settings').select('*').in('id', ['services', 'schedule', 'week_overrides']);
+      if (error) console.warn('Settings load error:', error);
+      else if (data) {
+        const svc = data.find(r => r.id === 'services');
+        const sch = data.find(r => r.id === 'schedule');
+        const wk = data.find(r => r.id === 'week_overrides');
+        if (svc && Array.isArray(svc.value)) SERVICES = svc.value;
+        if (sch && sch.value) SCHEDULE = sch.value;
+        if (wk && wk.value) WEEK_OVERRIDES = wk.value;
+      }
+    } catch (e) { console.warn('Using defaults'); }
+    renderHoursDisplay();
+  }
+
+  function renderHoursDisplay() {
+    hoursDisplay.innerHTML = '';
+    for (let i = 1; i <= 7; i++) {
+      const dow = i % 7;
+      const slots = SCHEDULE[dow] || [];
+      let timeText;
+      if (!slots.length) timeText = '<span class="closed">Closed</span>';
+      else timeText = `<span class="time">${slots[0]} – ${endTime(slots[slots.length-1])}</span>`;
+      hoursDisplay.innerHTML += `<div class="row"><span class="day">${DAY_NAMES[dow]}</span>${timeText}</div>`;
+    }
+  }
+
+  async function loadSlots() {
+    selected = null; selectedService = null;
+    formArea.classList.remove('show'); hideMsg();
+    const date = dateInput.value;
+    const info = slotsForDate(date);
+    currentDateInfo = info;
+    dayLabel.textContent = info.dayName;
+    if (info.isClosed) {
+      slotsDiv.innerHTML = info.isOverride
+        ? `<div class="empty-msg">Closed on this date.</div>`
+        : `<div class="empty-msg">Closed on ${info.dayName}s — pick another day.</div>`;
+      return;
+    }
+    slotsDiv.innerHTML = `<div class="loading-slots">Loading…</div>`;
+    const { data, error } = await db.from('bookings').select('name, time').eq('date', date);
+    if (error) { console.error('Supabase error:', error); slotsDiv.innerHTML = `<div class="empty-msg">Could not load slots. Try again.</div>`; return; }
+    takenSlots = data || [];
+    renderSlots();
+  }
+
+  function renderSlots() {
+    slotsDiv.innerHTML = '';
+    const info = currentDateInfo;
+    const anyFree = info.slots.some(t => !isTaken(t));
+    if (!anyFree) { slotsDiv.innerHTML = `<div class="empty-msg">Fully booked for ${info.dayName} — try another date.</div>`; return; }
+    info.slots.forEach(time => {
+      const taken = isTaken(time);
+      const div = document.createElement('div');
+      div.className = 'slot ' + (taken ? 'taken' : 'available');
+      const timeRange = `${time} – ${endTime(time)}`;
+      if (taken) {
+        const booking = takenSlots.find(b => b.time === time);
+        const initial = booking && booking.name ? booking.name.trim().charAt(0).toUpperCase() : '';
+        div.innerHTML = `<div class="slot-time">${time}</div><div class="slot-duration">1 hour</div><div class="booked-mark">BOOKED${initial ? ' · ' + initial : ''}</div>`;
+      } else {
+        div.innerHTML = `<div class="slot-time">${time}</div><div class="slot-duration">1 hour</div>`;
+        div.onclick = () => {
+          document.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
+          div.classList.add('selected');
+          selected = time;
+          selectedTimeEl.textContent = timeRange;
+          renderServices();
+          formArea.classList.add('show');
+          hideMsg();
+          setTimeout(() => formArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+        };
+      }
+      slotsDiv.appendChild(div);
+    });
+  }
+
+  function isTaken(time) { return takenSlots.some(b => b.time === time); }
+
+  function renderServices() {
+    selectedService = null; totalBar.style.display = 'none'; serviceList.innerHTML = '';
+    const isSpecial = currentDateInfo.isSpecial;
+    specialTag.style.display = isSpecial ? 'inline-block' : 'none';
+    SERVICES.forEach(svc => {
+      const price = priceFor(svc, isSpecial);
+      const normalPrice = svc.price;
+      const showStrike = isSpecial && price < normalPrice;
+      const strikeHtml = showStrike ? `<span class="was">R${normalPrice}</span>` : '';
+      const opt = document.createElement('div');
+      opt.className = 'service-option';
+      opt.innerHTML = `<div class="service-info"><div class="service-name">${svc.name}</div><div class="service-desc">${svc.desc}</div></div><div class="service-price">${strikeHtml}R${price}</div>`;
+      opt.onclick = () => {
+        document.querySelectorAll('.service-option').forEach(el => el.classList.remove('selected'));
+        opt.classList.add('selected');
+        selectedService = { ...svc, finalPrice: price };
+        totalAmount.textContent = `R${price}`;
+        totalBar.style.display = 'flex';
+      };
+      serviceList.appendChild(opt);
+    });
+  }
+
+  async function book() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const date = dateInput.value;
+    if (!selected) { showMsg('Please pick a time slot first.', 'error'); return; }
+    if (!selectedService) { showMsg('Please choose what you would like.', 'error'); return; }
+    if (!name || !phone) { showMsg('Please enter your name and WhatsApp number.', 'error'); return; }
+
+    const btn = document.getElementById('bookBtn');
+    btn.disabled = true; btn.textContent = 'Booking…';
+
+    const cleanPhone = phone.replace(/\s+/g, '').replace(/^\+/, '').replace(/^0/, '27');
+    const { error } = await db.from('bookings').insert({
+      name, phone: cleanPhone, date,
+      time: selected,
+      service: selectedService.name,
+      price: selectedService.finalPrice
+    });
+
+    btn.disabled = false; btn.textContent = 'Confirm Booking';
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      if (error.code === '23505') showMsg('That slot was just taken. Please pick another.', 'error');
+      else showMsg('Booking failed. Please try again.', 'error');
+      loadSlots(); return;
+    }
+
+    const { dayName } = slotsForDate(date);
+    const range = `${selected} – ${endTime(selected)}`;
+    lastBooking = { name, dayName, date, range, service: selectedService.name, price: selectedService.finalPrice, phone: cleanPhone };
+
+    showBookingPopup(`${dayName} · ${range}`, `${selectedService.name} · R${selectedService.finalPrice}`);
+
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    setTimeout(loadSlots, 1000);
+
+    setTimeout(() => {
+      try {
+        const barberMsg =
+          `💈 NEW BOOKING — ${SHOP_NAME}%0A` +
+          `👤 ${encodeURIComponent(name)}%0A` +
+          `📱 ${encodeURIComponent(cleanPhone)}%0A` +
+          `🕐 ${dayName} ${date} · ${range}%0A` +
+          `✂️ ${selectedService.name}%0A` +
+          `💰 R${selectedService.finalPrice}`;
+        window.open(`https://wa.me/${BARBER_NUMBER}?text=${barberMsg}`, '_blank');
+      } catch (err) { console.log('Barber WhatsApp blocked.'); }
+    }, 600);
+  }
+
+  function addToCalendar() {
+    if (!lastBooking) return;
+    const { date, range, service, price } = lastBooking;
+    const [year, month, day] = date.split('-').map(Number);
+    const parts = range.split('–').map(s => s.trim());
+    const [startH, startM] = parts[0].split(':').map(Number);
+    const [endH, endM] = parts[1].split(':').map(Number);
+    const startDate = new Date(year, month - 1, day, startH, startM, 0);
+    const endDate = new Date(year, month - 1, day, endH, endM, 0);
+    function fmt(d) {
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+    }
+    const ics = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FAJED//Booking//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `UID:fajed-${Date.now()}@fajed`,
+      `DTSTAMP:${fmt(new Date())}`,
+      `DTSTART:${fmt(startDate)}`,
+      `DTEND:${fmt(endDate)}`,
+      `SUMMARY:FAJED — ${service}`,
+      `DESCRIPTION:Your appointment at FAJED\\n\\nService: ${service}\\nPrice: R${price}\\n\\nArrive 5 minutes early.`,
+      `LOCATION:FAJED Barbershop`,
+      'STATUS:CONFIRMED',
+      'BEGIN:VALARM', 'TRIGGER:-PT1H', 'ACTION:DISPLAY', 'DESCRIPTION:FAJED in 1 hour', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR'
+    ].join('\r\n');
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `FAJED-${date}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function showBookingPopup(detail, service) {
+    const popup = document.getElementById('popup');
+    document.getElementById('popup-detail').textContent = detail;
+    document.getElementById('popup-service').textContent = service;
+    popup.classList.add('show');
+    launchConfetti();
+    if (popupTimer) clearTimeout(popupTimer);
+    popupTimer = setTimeout(() => { popup.classList.remove('show'); }, 15000);
+  }
+
+  function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.classList.remove('show');
+    if (popupTimer) clearTimeout(popupTimer);
+  }
+
+  function sendBookingToBarber() {
+    if (!lastBooking) return;
+    const msg =
+      `✅ BOOKING PROOF — ${SHOP_NAME}%0A%0A` +
+      `👤 ${encodeURIComponent(lastBooking.name)}%0A` +
+      `🕐 ${lastBooking.dayName} · ${lastBooking.range}%0A` +
+      `✂️ ${lastBooking.service}%0A` +
+      `💰 R${lastBooking.price}%0A%0A` +
+      `This is my proof of booking.`;
+    window.open(`https://wa.me/${BARBER_NUMBER}?text=${msg}`, '_blank');
+  }
+
+  function launchConfetti() {
+    const colors = ['#b8945f', '#111111', '#2e7d32', '#e0be7a', '#ffffff'];
+    const popup = document.getElementById('popup');
+    for (let i = 0; i < 60; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const size = 6 + Math.random() * 8, left = Math.random() * 100, delay = Math.random() * 0.4, duration = 1.6 + Math.random() * 1.4, rotation = Math.random() * 360;
+      const color = colors[Math.floor(Math.random() * colors.length)], shape = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.cssText = `position: fixed; top: -20px; left: ${left}vw; width: ${size}px; height: ${size * 1.4}px; background: ${color}; border-radius: ${shape}; transform: rotate(${rotation}deg); animation: confettiFall ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s forwards; z-index: 1001; pointer-events: none;`;
+      popup.appendChild(piece);
+      setTimeout(() => piece.remove(), (duration + delay + 0.5) * 1000);
+    }
+  }
+
+  function toggleCancelPanel(e) {
+    e.preventDefault();
+    const panel = document.getElementById('cancel-panel');
+    panel.classList.toggle('show');
+    if (panel.classList.contains('show')) {
+      document.getElementById('cancel-phone').focus();
+    } else {
+      document.getElementById('cancel-results').innerHTML = '';
+      document.getElementById('cancel-phone').value = '';
+    }
+  }
+
+  async function findMyBookings() {
+    const phone = document.getElementById('cancel-phone').value.trim();
+    const results = document.getElementById('cancel-results');
+    if (!phone) {
+      results.innerHTML = '<p style="color:#c62828;font-size:0.85rem;margin-top:1rem;">Please enter your phone number.</p>';
+      return;
+    }
+    const normalised = phone.replace(/\s+/g, '').replace(/^\+/, '').replace(/^0/, '27');
+    results.innerHTML = '<p style="color:#999;font-style:italic;font-size:0.85rem;margin-top:1rem;">Searching…</p>';
+    const { data, error } = await db.from('bookings').select('*').eq('phone', normalised).order('date', { ascending: true }).order('time', { ascending: true });
+    if (error) {
+      console.error(error);
+      results.innerHTML = '<p style="color:#c62828;font-size:0.85rem;margin-top:1rem;">Could not search. Try again.</p>';
+      return;
+    }
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const upcoming = (data || []).filter(b => b.date >= todayStr);
+    if (!upcoming.length) {
+      results.innerHTML = '<p style="color:#999;font-style:italic;font-size:0.85rem;margin-top:1rem;">No upcoming bookings found for that number.</p>';
+      return;
+    }
+    results.innerHTML = '';
+    upcoming.forEach(b => {
+      const { dayName } = slotsForDate(b.date);
+      const range = `${b.time} – ${endTime(b.time)}`;
+      const free = isFreeCancellation(b.date, b.time);
+      const tag = free
+        ? `<span class="policy-tag free">✓ Free cancellation</span>`
+        : `<span class="policy-tag fee">⚠ R${CANCEL_FEE} fee applies</span>`;
+      const row = document.createElement('div');
+      row.className = 'my-booking-row';
+      row.innerHTML = `
+        <div>
+          <strong>${dayName} ${b.date}</strong>
+          <div class="meta">${range} · ${escapeHtml(b.service || '')} · R${b.price || ''}</div>
+          ${tag}
+        </div>
+        <button class="cancel-mine-btn" onclick="cancelMyBooking('${b.id}')">Cancel</button>
+      `;
+      results.appendChild(row);
+    });
+  }
+
+  async function cancelMyBooking(id) {
+    const { data: booking, error: fetchErr } = await db.from('bookings').select('*').eq('id', id).single();
+    if (fetchErr || !booking) { alert('Could not find booking.'); return; }
+
+    const free = isFreeCancellation(booking.date, booking.time);
+    const confirmMsg = free
+      ? 'Cancel this booking? No fee applies (24+ hours notice).'
+      : `Cancel this booking? A R${CANCEL_FEE} fee will apply (less than 24 hours notice).`;
+    if (!confirm(confirmMsg)) return;
+
+    const { dayName } = slotsForDate(booking.date);
+    const range = `${booking.time} – ${endTime(booking.time)}`;
+    const feeLine = free
+      ? `✅ Free cancellation (24+ hours notice)`
+      : `⚠️ Within 24 hours — R${CANCEL_FEE} fee applies`;
+    const msg =
+      `❌ CANCELLATION — ${SHOP_NAME}%0A%0A` +
+      `👤 ${encodeURIComponent(booking.name)}%0A` +
+      `🕐 ${dayName} ${booking.date} · ${range}%0A` +
+      `✂️ ${booking.service || ''}%0A%0A` +
+      `${feeLine}`;
+    const waUrl = `https://wa.me/${BARBER_NUMBER}?text=${msg}`;
+
+    try { window.open(waUrl, '_blank'); } catch (e) { console.log('WhatsApp blocked:', e); }
+
+    const { error } = await db.from('bookings').delete().eq('id', id);
+    if (error) { alert('Could not cancel. Please try again.'); console.error(error); return; }
+
+    await findMyBookings();
+    await loadSlots();
+  }
+
+  function toggleAdmin(e) {
+    e.preventDefault();
+    const panel = document.getElementById('admin-panel');
+    panel.classList.toggle('show');
+    if (panel.classList.contains('show') && isAdminLoggedIn) renderAdmin();
+  }
+  function adminLogin() {
+    const pw = document.getElementById('admin-password').value;
+    if (pw === ADMIN_PASSWORD) {
+      isAdminLoggedIn = true;
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-content').style.display = 'block';
+      document.getElementById('login-error').classList.remove('show');
+      renderAdmin();
+    } else document.getElementById('login-error').classList.add('show');
+  }
+  function adminLogout() {
+    isAdminLoggedIn = false;
+    document.getElementById('admin-password').value = '';
+    document.getElementById('admin-login').style.display = 'block';
+    document.getElementById('admin-content').style.display = 'none';
+  }
+  function showTab(name, el) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'prices') renderPriceEditor();
+    if (name === 'schedule') renderWeekPlanner();
+    if (name === 'bookings') renderAdmin();
+  }
+
+  // ============================================================
+  // WEEK PLANNER
+  // ============================================================
+  function changeWeek(delta) {
+    currentWeekStart.setDate(currentWeekStart.getDate() + delta * 7);
+    renderWeekPlanner();
+  }
+
+  function renderWeekPlanner() {
+    const mondayKey = dateKey(currentWeekStart);
+    const label = document.getElementById('week-label');
+    const sub = document.getElementById('week-sub');
+    const hint = document.getElementById('week-hint');
+    const editor = document.getElementById('week-schedule-editor');
+
+    // Is this the default week (no override)?
+    const hasOverride = Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES, mondayKey);
+
+    label.innerHTML = `${formatWeekRange(currentWeekStart)} <small>${hasOverride ? 'Custom hours for this week' : 'Using default hours'}</small>`;
+
+    // Is it the current week?
+    const todayMonday = getMonday(new Date());
+    const isCurrentWeek = mondayKey === dateKey(todayMonday);
+
+    hint.textContent = isCurrentWeek
+      ? "Editing THIS week — changes apply immediately."
+      : "Editing a future week. Save to apply.";
+
+    // What schedule are we showing?
+    let weekSchedule;
+    if (hasOverride) weekSchedule = WEEK_OVERRIDES[mondayKey];
+    else {
+      weekSchedule = {};
+      for (let dow = 0; dow < 7; dow++) weekSchedule[dow] = [...(SCHEDULE[dow] || [])];
+    }
+
+    editor.innerHTML = '';
+
+    // Show Monday → Sunday
+    for (let i = 0; i < 7; i++) {
+      const dow = (1 + i) % 7; // Monday=1, ... Sunday=0
+      const slots = weekSchedule[dow] || [];
+      const isClosed = slots.length === 0;
+      const isCustomized = hasOverride && Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES[mondayKey], dow);
+
+      const row = document.createElement('div');
+      row.className = 'week-day-row' + (isCustomized ? ' customized' : '');
+      row.innerHTML = `
+        <label>${DAY_NAMES[dow]}</label>
+        <input type="text" id="week-day-${dow}" value="${slots.join(',')}" placeholder="Empty = closed" />
+        <span class="day-status ${isClosed ? 'closed' : 'open'}">${isClosed ? 'Closed' : 'Open'}</span>
+      `;
+      editor.appendChild(row);
+
+      // Live update the status badge as they type
+      const input = row.querySelector('input');
+      const status = row.querySelector('.day-status');
+      input.addEventListener('input', () => {
+        const hasValue = input.value.trim().length > 0;
+        status.className = 'day-status ' + (hasValue ? 'open' : 'closed');
+        status.textContent = hasValue ? 'Open' : 'Closed';
+      });
+    }
+  }
+
+  async function saveWeekSchedule() {
+    const mondayKey = dateKey(currentWeekStart);
+
+    // Build week override
+    const weekData = {};
+    for (let i = 0; i < 7; i++) {
+      const dow = (1 + i) % 7;
+      const raw = document.getElementById('week-day-' + dow).value.trim();
+      weekData[dow] = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
+    }
+
+    // Compare to default — if identical, remove override (cleaner)
+    let isDefault = true;
+    for (let dow = 0; dow < 7; dow++) {
+      const def = (SCHEDULE[dow] || []).join(',');
+      const cur = (weekData[dow] || []).join(',');
+      if (def !== cur) { isDefault = false; break; }
+    }
+
+    if (isDefault) {
+      delete WEEK_OVERRIDES[mondayKey];
+    } else {
+      WEEK_OVERRIDES[mondayKey] = weekData;
+    }
+
+    // Save to Supabase
+    const { error } = await db.from('settings').upsert({
+      id: 'week_overrides',
+      value: WEEK_OVERRIDES,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) {
+      alert('Could not save. Check the console for details.');
+      console.error('Save week error:', error);
+      return;
+    }
+
+    alert('Week saved!');
+    renderWeekPlanner();
+    loadSlots();
+  }
+
+  async function resetWeekToDefault() {
+    const mondayKey = dateKey(currentWeekStart);
+    if (!Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES, mondayKey)) {
+      alert('This week is already using the default hours.');
+      return;
+    }
+    if (!confirm('Reset this week to default hours?')) return;
+
+    delete WEEK_OVERRIDES[mondayKey];
+
+    const { error } = await db.from('settings').upsert({
+      id: 'week_overrides',
+      value: WEEK_OVERRIDES,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) { alert('Could not save.'); console.error(error); return; }
+
+    alert('Reset to default!');
+    renderWeekPlanner();
+    loadSlots();
+  }
+
+  // ============================================================
+  // ADMIN — BOOKINGS / PRICES
+  // ============================================================
+  async function renderAdmin() {
+    const list = document.getElementById('admin-list');
+    list.innerHTML = '<p style="color:#999;font-style:italic;">Loading…</p>';
+    const { data, error } = await db.from('bookings').select('*').order('date', { ascending: true }).order('time', { ascending: true });
+    if (error) { list.innerHTML = '<p style="color:#c62828;">Could not load bookings.</p>'; return; }
+    const bookings = data || [];
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const todayStr = now.toISOString().slice(0, 10);
+    const monthBookings = bookings.filter(b => (b.date || '').startsWith(currentMonth));
+    const todayBookings = bookings.filter(b => b.date === todayStr);
+    const monthEarnings = monthBookings.reduce((sum, b) => sum + (b.price || 0), 0);
+    const serviceCounts = {};
+    bookings.forEach(b => { if (b.service) serviceCounts[b.service] = (serviceCounts[b.service] || 0) + 1; });
+    const popular = Object.entries(serviceCounts).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById('stat-month-count').textContent = monthBookings.length;
+    document.getElementById('stat-month-label').textContent = now.toLocaleString('en-ZA', { month: 'long', year: 'numeric' });
+    document.getElementById('stat-month-earnings').textContent = `R${monthEarnings.toLocaleString()}`;
+    document.getElementById('stat-today-count').textContent = todayBookings.length;
+    document.getElementById('stat-total-count').textContent = bookings.length;
+    document.getElementById('stat-popular').textContent = popular ? `${popular[0]} (${popular[1]})` : 'No data yet';
+    const upcoming = bookings.filter(b => b.date >= todayStr).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+    if (!upcoming.length) { list.innerHTML = '<p style="color:#999;font-style:italic;">No upcoming bookings.</p>'; return; }
+    list.innerHTML = '';
+    upcoming.forEach(b => {
+      const { dayName } = slotsForDate(b.date);
+      const range = `${b.time} – ${endTime(b.time)}`;
+      const row = document.createElement('div');
+      row.className = 'booking-row';
+      row.innerHTML = `<div><strong>${escapeHtml(b.name)}</strong><div class="meta">${dayName} ${b.date} · ${range} · ${escapeHtml(b.phone)}</div>${b.service ? `<div class="svc">✂️ ${escapeHtml(b.service)} — R${b.price || ''}</div>` : ''}</div><button class="cancel-btn" onclick="cancelBooking('${b.id}')">Cancel</button>`;
+      list.appendChild(row);
+    });
+  }
+  async function cancelBooking(id) {
+    if (!confirm('Cancel this booking?')) return;
+    const { data: booking } = await db.from('bookings').select('*').eq('id', id).single();
+    if (booking) {
+      const { dayName } = slotsForDate(booking.date);
+      const range = `${booking.time} – ${endTime(booking.time)}`;
+      const msg =
+        `❌ BARBER CANCELLED — ${SHOP_NAME}%0A%0A` +
+        `👤 ${encodeURIComponent(booking.name)}%0A` +
+        `🕐 ${dayName} ${booking.date} · ${range}%0A` +
+        `✂️ ${booking.service || ''}%0A%0A` +
+        `Your booking has been cancelled.`;
+      try { window.open(`https://wa.me/${booking.phone}?text=${msg}`, '_blank'); } catch (e) { console.log(e); }
+    }
+    const { error } = await db.from('bookings').delete().eq('id', id);
+    if (error) { alert('Could not cancel.'); return; }
+    await renderAdmin(); await loadSlots();
+  }
+  function renderPriceEditor() {
+    const editor = document.getElementById('price-editor');
+    editor.innerHTML = '';
+    SERVICES.forEach((svc, i) => {
+      const row = document.createElement('div');
+      row.className = 'edit-row';
+      const specialVal = svc.special != null ? svc.special : svc.price;
+      row.innerHTML = `
+        <label>${escapeHtml(svc.name)}<div class="field-hint">Normal / Special</div></label>
+        <input type="number" id="price-${i}" value="${svc.price}" min="0" step="5" placeholder="Normal" />
+        <input type="number" id="special-${i}" value="${specialVal}" min="0" step="5" placeholder="Special" />
+      `;
+      editor.appendChild(row);
+    });
+  }
+  async function savePrices() {
+    const updated = SERVICES.map((svc, i) => {
+      const normalVal = parseInt(document.getElementById('price-' + i).value, 10);
+      const specialVal = parseInt(document.getElementById('special-' + i).value, 10);
+      return {
+        ...svc,
+        price: isNaN(normalVal) ? svc.price : normalVal,
+        special: isNaN(specialVal) ? (svc.special != null ? svc.special : svc.price) : specialVal
+      };
+    });
+    const { error } = await db.from('settings').upsert({ id: 'services', value: updated, updated_at: new Date().toISOString() });
+    if (error) { alert('Could not save prices.'); console.error(error); return; }
+    SERVICES = updated; alert('Prices saved!');
+  }
+  function showMsg(text, type) { msg.textContent = text; msg.className = 'show ' + type; }
+  function hideMsg() { msg.className = ''; msg.textContent = ''; }
+
+  (async () => { await loadSettings(); await loadSlots(); })();
+</script>
+</body>
+</html>
