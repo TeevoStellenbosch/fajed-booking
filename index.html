@@ -41,10 +41,11 @@
   .hours-list .time { font-weight: 600; }
   .hours-list .closed { color: #bbb; text-decoration: line-through; font-weight: 400; }
   .date-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; margin-bottom: 0.6rem; display: block; }
-  input[type="date"], input[type="text"], input[type="tel"], input[type="password"], input[type="number"] { width: 100%; padding: 1rem 1.1rem; font-size: 1.05rem; font-family: 'Inter', sans-serif; font-weight: 500; border: 1.5px solid var(--light-grey); border-radius: 12px; background: var(--white); color: var(--ink); transition: all 0.15s; -webkit-appearance: none; appearance: none; }
-  input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+  input[type="date"], input[type="text"], input[type="tel"], input[type="password"], input[type="number"], select { width: 100%; padding: 1rem 1.1rem; font-size: 1.05rem; font-family: 'Inter', sans-serif; font-weight: 500; border: 1.5px solid var(--light-grey); border-radius: 12px; background: var(--white); color: var(--ink); transition: all 0.15s; -webkit-appearance: none; appearance: none; }
+  input:focus, select:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
   input::placeholder { color: #aaa; font-weight: 400; }
   input[type="date"] { font-weight: 600; cursor: pointer; }
+  select { cursor: pointer; }
   .slots-section { margin: 1.75rem 0 0.5rem; }
   .legend { display: flex; gap: 1.25rem; font-size: 0.75rem; color: var(--grey); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 0.85rem; }
   .legend span { display: flex; align-items: center; gap: 6px; }
@@ -117,8 +118,8 @@
   .admin-panel { display: none; margin-top: 1rem; background: var(--white); border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
   .admin-panel.show { display: block; }
   .admin-panel h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 2px; margin-bottom: 1rem; color: var(--ink); }
-  .admin-tabs { display: flex; gap: 0.2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--light-grey); flex-wrap: wrap; }
-  .admin-tab { flex: 1; min-width: 60px; padding: 0.6rem 0.2rem; cursor: pointer; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--grey); border-bottom: 2px solid transparent; transition: all 0.15s; text-align: center; background: none; border-radius: 0; margin: 0; font-family: 'Inter', sans-serif; }
+  .admin-tabs { display: flex; gap: 0.15rem; margin-bottom: 1rem; border-bottom: 1px solid var(--light-grey); flex-wrap: wrap; }
+  .admin-tab { flex: 1; min-width: 55px; padding: 0.6rem 0.15rem; cursor: pointer; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--grey); border-bottom: 2px solid transparent; transition: all 0.15s; text-align: center; background: none; border-radius: 0; margin: 0; font-family: 'Inter', sans-serif; }
   .admin-tab:hover { color: var(--ink); }
   .admin-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
   .admin-tab-content { display: none; }
@@ -142,11 +143,6 @@
   .booking-row .svc { color: var(--gold); font-weight: 600; font-size: 0.78rem; margin-top: 2px; }
   .cancel-btn { background: var(--red-soft); color: var(--red); border: none; padding: 0.4rem 0.75rem; border-radius: 8px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; width: auto; margin: 0; font-family: 'Inter', sans-serif; }
   .cancel-btn:hover { background: #f9d7d4; }
-  .edit-row { display: flex; gap: 0.5rem; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid var(--light-grey); flex-wrap: wrap; }
-  .edit-row:last-child { border-bottom: none; }
-  .edit-row label { flex: 1; min-width: 120px; font-size: 0.82rem; font-weight: 500; }
-  .edit-row input { width: 80px; padding: 0.5rem 0.6rem; font-size: 0.9rem; text-align: center; }
-  .edit-row .field-hint { font-size: 0.62rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
   .admin-save { margin-top: 1rem; padding: 0.9rem; font-size: 1.1rem; letter-spacing: 2px; }
   .login-form { padding: 1rem 0; }
   .login-form input { margin-bottom: 0.75rem; }
@@ -154,17 +150,173 @@
   .login-error.show { display: block; }
   .footer { text-align: center; margin-top: 3rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: #bbb; }
 
+  /* SERVICE MANAGER */
+  .service-card {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--light-grey);
+  }
+  .service-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    gap: 0.5rem;
+  }
+  .service-card-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex: 1;
+    color: var(--ink);
+  }
+  .service-card input {
+    padding: 0.55rem 0.7rem;
+    font-size: 0.85rem;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0.4rem;
+  }
+  .service-card .price-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .service-card .price-inputs label {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--grey);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    font-weight: 700;
+  }
+  .remove-service-btn {
+    background: var(--red-soft);
+    color: var(--red);
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .remove-service-btn:hover { background: #f9d7d4; }
+  .add-service-btn {
+    background: var(--green-soft);
+    color: var(--green);
+    border: 1.5px dashed var(--green);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .add-service-btn:hover { background: var(--green); color: var(--white); }
+
+  /* DATE SPECIALS */
+  .special-item {
+    background: linear-gradient(135deg, #fdfaf3, #f7f0e0);
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .special-item-info { flex: 1; }
+  .special-item-date {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: var(--ink);
+  }
+  .special-item-detail {
+    font-size: 0.72rem;
+    color: var(--grey);
+    margin-top: 2px;
+  }
+  .remove-special-btn {
+    background: var(--red-soft);
+    color: var(--red);
+    border: none;
+    padding: 0.4rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .remove-special-btn:hover { background: #f9d7d4; }
+
+  .special-form {
+    background: var(--white);
+    border: 1.5px solid var(--gold);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+  }
+  .special-form h5 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.6rem;
+  }
+  .special-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .special-form label {
+    display: block;
+    font-size: 0.62rem;
+    color: var(--grey);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .special-form input,
+  .special-form select {
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.85rem;
+    border: 1.5px solid var(--light-grey);
+    border-radius: 8px;
+    background: var(--white);
+    font-family: 'Inter', sans-serif;
+  }
+  .save-special-btn {
+    background: var(--gold);
+    color: var(--white);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0.7rem;
+    margin-top: 0.5rem;
+  }
+  .save-special-btn:hover { background: #a58751; }
+
   .pw-wrap { position: relative; display: block; width: 100%; }
-  .pw-wrap input { padding-right: 3rem !important; }
+  .pw-wrap input { padding-right: 3rem !important; margin-bottom: 0; }
   .eye-toggle {
     position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
     background: transparent !important; border: none !important; cursor: pointer;
     width: 32px !important; height: 32px !important; margin: 0 !important; padding: 0 !important;
     display: flex; align-items: center; justify-content: center;
-    color: #000000; opacity: 1; transition: opacity 0.15s;
-    z-index: 2; box-shadow: none !important; border-radius: 6px;
+    color: #000000; opacity: 1; z-index: 2; box-shadow: none !important; border-radius: 6px;
   }
-  .eye-toggle:hover { opacity: 0.7; color: #000000; background: transparent !important; transform: translateY(-50%) !important; }
+  .eye-toggle:hover { opacity: 0.7; background: transparent !important; }
   .eye-toggle svg { width: 20px; height: 20px; display: block; stroke: #000000; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
   .week-nav { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--cream); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
@@ -180,7 +332,6 @@
   .week-day-row .day-status { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 4px; flex-shrink: 0; }
   .week-day-row .day-status.closed { background: var(--red-soft); color: var(--red); }
   .week-day-row .day-status.open { background: var(--green-soft); color: var(--green); }
-  .week-day-row.customized label::after { content: ' ●'; color: var(--gold); font-size: 0.7rem; }
 
   .popup-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; overflow: hidden; }
   .popup-overlay.show { opacity: 1; pointer-events: auto; }
@@ -307,17 +458,22 @@
         <div class="login-error" id="login-error">Wrong password. Try again.</div>
       </div>
     </div>
+
     <div id="admin-content" style="display:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
         <h3 style="margin:0;">Admin Panel</h3>
         <button onclick="adminLogout()" style="width:auto;padding:0.4rem 0.75rem;font-size:0.75rem;letter-spacing:1px;margin:0;">Logout</button>
       </div>
+
       <div class="admin-tabs">
         <div class="admin-tab active" onclick="showTab('bookings', this)">Bookings</div>
-        <div class="admin-tab" onclick="showTab('prices', this)">Prices</div>
+        <div class="admin-tab" onclick="showTab('services', this)">Services</div>
+        <div class="admin-tab" onclick="showTab('specials', this)">Specials</div>
         <div class="admin-tab" onclick="showTab('schedule', this)">Weekly</div>
         <div class="admin-tab" onclick="showTab('password', this)">Password</div>
       </div>
+
+      <!-- BOOKINGS -->
       <div class="admin-tab-content active" id="tab-bookings">
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="stat-month-count">—</div><div class="stat-sub" id="stat-month-label">—</div></div>
@@ -330,11 +486,24 @@
         <h4 style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;color:var(--grey);margin:1.25rem 0 0.5rem;">Upcoming Bookings</h4>
         <div id="admin-list"><p style="color:#999;font-style:italic;">Loading…</p></div>
       </div>
-      <div class="admin-tab-content" id="tab-prices">
-        <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Normal price and Special (Thu/Fri). Leave blank to keep normal.</p>
-        <div id="price-editor"></div>
-        <button onclick="savePrices()" class="admin-save">Save Prices</button>
+
+      <!-- SERVICES MANAGER -->
+      <div class="admin-tab-content" id="tab-services">
+        <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Add, edit or remove your services. Prices apply to all future bookings.</p>
+        <div id="service-manager"></div>
+        <button onclick="addNewService()" class="add-service-btn">+ Add a new service</button>
+        <button onclick="saveServices()" class="admin-save">Save Services</button>
       </div>
+
+      <!-- SPECIALS -->
+      <div class="admin-tab-content" id="tab-specials">
+        <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Add a special on a specific date — like a public holiday or slow day.</p>
+        <div id="special-list"></div>
+        <button onclick="showSpecialForm()" class="add-service-btn" id="add-special-btn">+ Add a special date</button>
+        <div id="special-form-container"></div>
+      </div>
+
+      <!-- WEEKLY -->
       <div class="admin-tab-content" id="tab-schedule">
         <div class="week-nav">
           <button onclick="changeWeek(-1)">←</button>
@@ -346,30 +515,32 @@
         <button onclick="saveWeekSchedule()" class="admin-save">Save This Week</button>
         <button onclick="resetWeekToDefault()" style="background:var(--cream);color:var(--ink);border:1.5px solid var(--light-grey);font-size:0.9rem;letter-spacing:1.5px;margin-top:0.5rem;">Reset this week to default</button>
       </div>
+
+      <!-- PASSWORD -->
       <div class="admin-tab-content" id="tab-password">
         <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Change the admin password. It's stored securely in the database.</p>
-        <div class="edit-row">
-          <label>Current password</label>
-          <div class="pw-wrap" style="flex:1;">
-            <input type="password" id="pw-current" placeholder="Enter current" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
+        <div style="padding:0.6rem 0;">
+          <label style="font-size:0.82rem;font-weight:500;">Current password</label>
+          <div class="pw-wrap">
+            <input type="password" id="pw-current" placeholder="Enter current" />
             <button type="button" class="eye-toggle" onclick="toggleEye('pw-current', this)" aria-label="Show password">
               <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
         </div>
-        <div class="edit-row">
-          <label>New password</label>
-          <div class="pw-wrap" style="flex:1;">
-            <input type="password" id="pw-new" placeholder="Enter new" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
+        <div style="padding:0.6rem 0;">
+          <label style="font-size:0.82rem;font-weight:500;">New password</label>
+          <div class="pw-wrap">
+            <input type="password" id="pw-new" placeholder="Enter new" />
             <button type="button" class="eye-toggle" onclick="toggleEye('pw-new', this)" aria-label="Show password">
               <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
         </div>
-        <div class="edit-row">
-          <label>Confirm new</label>
-          <div class="pw-wrap" style="flex:1;">
-            <input type="password" id="pw-confirm" placeholder="Repeat new" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
+        <div style="padding:0.6rem 0;">
+          <label style="font-size:0.82rem;font-weight:500;">Confirm new</label>
+          <div class="pw-wrap">
+            <input type="password" id="pw-confirm" placeholder="Repeat new" />
             <button type="button" class="eye-toggle" onclick="toggleEye('pw-confirm', this)" aria-label="Show password">
               <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
@@ -378,6 +549,7 @@
         <div id="pw-msg" style="margin-top:1rem;font-size:0.85rem;text-align:center;display:none;"></div>
         <button onclick="changePassword()" class="admin-save">Change Password</button>
       </div>
+
     </div>
   </div>
 
@@ -432,6 +604,7 @@
   let SERVICES = [...DEFAULT_SERVICES];
   let SCHEDULE = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
   let WEEK_OVERRIDES = {};
+  let DATE_SPECIALS = {}; // { "2026-12-25": { type: 'percent', value: 20, caption: 'Christmas Deal' } }
   let currentWeekStart = null;
   let lastBooking = null;
   let popupTimer = null;
@@ -468,6 +641,16 @@
     const fmt = d => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
     return `${fmt(monday)} – ${fmt(sunday)}`;
   }
+  function formatDateLong(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dateObj = new Date(y, m - 1, d);
+    return `${DAY_NAMES[dateObj.getDay()]} ${d} ${MONTHS[m-1]} ${y}`;
+  }
+
+  // ⭐ Returns the special for a given date, if any
+  function getSpecialForDate(dateStr) {
+    return DATE_SPECIALS[dateStr] || null;
+  }
 
   function slotsForDate(dateStr) {
     const [y, m, d] = dateStr.split('-').map(Number);
@@ -493,10 +676,44 @@
     const end = new Date(); end.setHours(h + 1, m, 0, 0);
     return `${String(end.getHours()).padStart(2,'0')}:${String(end.getMinutes()).padStart(2,'0')}`;
   }
-  function priceFor(service, isSpecial) {
-    if (!isSpecial) return service.price;
-    return (service.special != null && !isNaN(service.special)) ? service.special : service.price;
+
+  // ⭐ Calculate final price — considering service special + date special
+  function priceFor(service, isSpecialDay, dateSpecial) {
+    let base = service.price;
+
+    // Thursday/Friday weekly special
+    if (isSpecialDay && service.special != null && !isNaN(service.special)) {
+      base = service.special;
+    }
+
+    // Date-specific special overrides everything
+    if (dateSpecial) {
+      if (dateSpecial.type === 'percent') {
+        return Math.round(base * (1 - dateSpecial.value / 100));
+      } else if (dateSpecial.type === 'fixed') {
+        // Fixed price applies to all services
+        return dateSpecial.value;
+      }
+    }
+
+    return base;
   }
+
+  // ⭐ Calculate original price to show as struck-through
+  function originalPrice(service, isSpecialDay, dateSpecial) {
+    if (!dateSpecial) {
+      // No date special — show original if the weekly special applied
+      if (isSpecialDay && service.special != null && !isNaN(service.special) && service.special < service.price) {
+        return service.price;
+      }
+      return null;
+    }
+    // Date special exists — show the price before the date special
+    let base = service.price;
+    if (isSpecialDay && service.special != null && !isNaN(service.special)) base = service.special;
+    return base;
+  }
+
   function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
   function hoursUntil(date, time) {
     const [y, m, d] = date.split('-').map(Number);
@@ -517,7 +734,7 @@
   const totalAmount = document.getElementById('total-amount');
   const specialTag = document.getElementById('special-tag');
   const hoursDisplay = document.getElementById('hours-display');
-  let selected = null, selectedService = null, currentDateInfo = null, takenSlots = [], isAdminLoggedIn = false;
+  let selected = null, selectedService = null, currentDateInfo = null, currentDateSpecial = null, takenSlots = [], isAdminLoggedIn = false;
 
   const today = new Date().toISOString().slice(0, 10);
   dateInput.value = today; dateInput.min = today; dateInput.onchange = loadSlots;
@@ -525,15 +742,17 @@
 
   async function loadSettings() {
     try {
-      const { data, error } = await db.from('settings').select('*').in('id', ['services', 'schedule', 'week_overrides']);
+      const { data, error } = await db.from('settings').select('*').in('id', ['services', 'schedule', 'week_overrides', 'date_specials']);
       if (error) console.warn('Settings load error:', error);
       else if (data) {
         const svc = data.find(r => r.id === 'services');
         const sch = data.find(r => r.id === 'schedule');
         const wk = data.find(r => r.id === 'week_overrides');
+        const ds = data.find(r => r.id === 'date_specials');
         if (svc && Array.isArray(svc.value)) SERVICES = svc.value;
         if (sch && sch.value) SCHEDULE = sch.value;
         if (wk && wk.value) WEEK_OVERRIDES = wk.value;
+        if (ds && ds.value) DATE_SPECIALS = ds.value;
       }
     } catch (e) { console.warn('Using defaults'); }
     renderHoursDisplay();
@@ -557,6 +776,7 @@
     const date = dateInput.value;
     const info = slotsForDate(date);
     currentDateInfo = info;
+    currentDateSpecial = getSpecialForDate(date);
     dayLabel.textContent = info.dayName;
     if (info.isClosed) {
       slotsDiv.innerHTML = info.isOverride
@@ -606,16 +826,31 @@
 
   function renderServices() {
     selectedService = null; totalBar.style.display = 'none'; serviceList.innerHTML = '';
-    const isSpecial = currentDateInfo.isSpecial;
-    specialTag.style.display = isSpecial ? 'inline-block' : 'none';
+    const isSpecialDay = currentDateInfo.isSpecial;
+    const ds = currentDateSpecial;
+
+    // Badge — show date special caption OR weekly specials badge
+    if (ds) {
+      let label = '';
+      if (ds.type === 'percent') label = `${ds.value}% OFF`;
+      else if (ds.type === 'fixed') label = `R${ds.value} FLAT`;
+      if (ds.caption) label += ` · ${ds.caption.toUpperCase()}`;
+      specialTag.textContent = label;
+      specialTag.style.display = 'inline-block';
+    } else if (isSpecialDay) {
+      specialTag.textContent = 'SPECIALS';
+      specialTag.style.display = 'inline-block';
+    } else {
+      specialTag.style.display = 'none';
+    }
+
     SERVICES.forEach(svc => {
-      const price = priceFor(svc, isSpecial);
-      const normalPrice = svc.price;
-      const showStrike = isSpecial && price < normalPrice;
-      const strikeHtml = showStrike ? `<span class="was">R${normalPrice}</span>` : '';
+      const price = priceFor(svc, isSpecialDay, ds);
+      const original = originalPrice(svc, isSpecialDay, ds);
+      const strikeHtml = (original != null && original > price) ? `<span class="was">R${original}</span>` : '';
       const opt = document.createElement('div');
       opt.className = 'service-option';
-      opt.innerHTML = `<div class="service-info"><div class="service-name">${svc.name}</div><div class="service-desc">${svc.desc}</div></div><div class="service-price">${strikeHtml}R${price}</div>`;
+      opt.innerHTML = `<div class="service-info"><div class="service-name">${escapeHtml(svc.name)}</div><div class="service-desc">${escapeHtml(svc.desc || '')}</div></div><div class="service-price">${strikeHtml}R${price}</div>`;
       opt.onclick = () => {
         document.querySelectorAll('.service-option').forEach(el => el.classList.remove('selected'));
         opt.classList.add('selected');
@@ -855,20 +1090,13 @@
 
   async function adminLogin() {
     const pw = document.getElementById('admin-password').value;
-
     let correctPassword = ADMIN_PASSWORD;
     let hasStoredPassword = false;
-
     try {
       const { data, error } = await db.from('admin_auth').select('password').eq('id', 'main').single();
-      if (!error && data && data.password) {
-        correctPassword = data.password;
-        hasStoredPassword = true;
-      }
+      if (!error && data && data.password) { correctPassword = data.password; hasStoredPassword = true; }
     } catch (e) { console.warn('No stored password, using default'); }
-
     const match = hasStoredPassword ? (pw === correctPassword) : (pw === ADMIN_PASSWORD);
-
     if (match) {
       isAdminLoggedIn = true;
       document.getElementById('admin-login').style.display = 'none';
@@ -890,7 +1118,8 @@
     document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
-    if (name === 'prices') renderPriceEditor();
+    if (name === 'services') renderServiceManager();
+    if (name === 'specials') renderSpecials();
     if (name === 'schedule') renderWeekPlanner();
     if (name === 'bookings') renderAdmin();
     if (name === 'password') {
@@ -905,6 +1134,209 @@
     }
   }
 
+  // ============================================================
+  // SERVICE MANAGER (#26)
+  // ============================================================
+  function renderServiceManager() {
+    const container = document.getElementById('service-manager');
+    container.innerHTML = '';
+    if (!SERVICES.length) {
+      container.innerHTML = '<p style="color:#999;font-style:italic;padding:0.5rem 0;">No services yet. Add one below.</p>';
+      return;
+    }
+    SERVICES.forEach((svc, i) => {
+      const card = document.createElement('div');
+      card.className = 'service-card';
+      card.innerHTML = `
+        <div class="service-card-header">
+          <div class="service-card-title">Service ${i + 1}</div>
+          <button class="remove-service-btn" onclick="removeService(${i})">Remove</button>
+        </div>
+        <input type="text" id="svc-name-${i}" value="${escapeHtml(svc.name)}" placeholder="Service name" />
+        <input type="text" id="svc-desc-${i}" value="${escapeHtml(svc.desc || '')}" placeholder="Short description" />
+        <div class="price-inputs">
+          <div>
+            <label>Normal price</label>
+            <input type="number" id="svc-price-${i}" value="${svc.price}" min="0" step="5" />
+          </div>
+          <div>
+            <label>Thu/Fri price</label>
+            <input type="number" id="svc-special-${i}" value="${svc.special != null ? svc.special : svc.price}" min="0" step="5" />
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function addNewService() {
+    const newId = 'svc-' + Date.now();
+    SERVICES.push({
+      id: newId,
+      name: 'New Service',
+      desc: '',
+      price: 100,
+      special: 100
+    });
+    renderServiceManager();
+  }
+
+  function removeService(index) {
+    if (!confirm(`Remove "${SERVICES[index].name}"?`)) return;
+    SERVICES.splice(index, 1);
+    renderServiceManager();
+  }
+
+  async function saveServices() {
+    const updated = SERVICES.map((svc, i) => {
+      const name = document.getElementById('svc-name-' + i).value.trim();
+      const desc = document.getElementById('svc-desc-' + i).value.trim();
+      const price = parseInt(document.getElementById('svc-price-' + i).value, 10);
+      const special = parseInt(document.getElementById('svc-special-' + i).value, 10);
+      return {
+        ...svc,
+        name: name || svc.name,
+        desc: desc,
+        price: isNaN(price) ? svc.price : price,
+        special: isNaN(special) ? (svc.special != null ? svc.special : svc.price) : special
+      };
+    });
+
+    const { error } = await db.from('settings').upsert({
+      id: 'services',
+      value: updated,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) { alert('Could not save.'); console.error(error); return; }
+    SERVICES = updated;
+    alert('Services saved!');
+    renderServiceManager();
+  }
+
+  // ============================================================
+  // DATE SPECIALS (#27)
+  // ============================================================
+  function renderSpecials() {
+    const container = document.getElementById('special-list');
+    container.innerHTML = '';
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const entries = Object.entries(DATE_SPECIALS)
+      .filter(([d]) => d >= todayStr)
+      .sort(([a], [b]) => a.localeCompare(b));
+
+    if (!entries.length) {
+      container.innerHTML = '<p style="color:#999;font-style:italic;padding:0.5rem 0;">No special dates yet. Add one below.</p>';
+      return;
+    }
+
+    entries.forEach(([date, spec]) => {
+      let detail = '';
+      if (spec.type === 'percent') detail = `${spec.value}% off everything`;
+      else if (spec.type === 'fixed') detail = `All services R${spec.value}`;
+      if (spec.caption) detail += ` — "${spec.caption}"`;
+
+      const item = document.createElement('div');
+      item.className = 'special-item';
+      item.innerHTML = `
+        <div class="special-item-info">
+          <div class="special-item-date">${formatDateLong(date)}</div>
+          <div class="special-item-detail">${escapeHtml(detail)}</div>
+        </div>
+        <button class="remove-special-btn" onclick="removeSpecial('${date}')">Remove</button>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  function showSpecialForm() {
+    const container = document.getElementById('special-form-container');
+    const todayStr = new Date().toISOString().slice(0, 10);
+    container.innerHTML = `
+      <div class="special-form">
+        <h5>New Special Date</h5>
+        <div class="form-row">
+          <div>
+            <label>Date</label>
+            <input type="date" id="special-date" value="${todayStr}" min="${todayStr}" />
+          </div>
+          <div>
+            <label>Type</label>
+            <select id="special-type" onchange="updateSpecialForm()">
+              <option value="percent">% off everything</option>
+              <option value="fixed">Flat price for all</option>
+            </select>
+          </div>
+        </div>
+        <div id="special-value-container">
+          <label id="special-value-label">Discount %</label>
+          <input type="number" id="special-value" value="20" min="0" max="100" step="5" />
+        </div>
+        <div style="margin-top:0.5rem;">
+          <label>Caption (shown to clients)</label>
+          <input type="text" id="special-caption" placeholder="e.g. Christmas Deal, Youth Day" />
+        </div>
+        <button class="save-special-btn" onclick="saveSpecialDate()">Save Special</button>
+      </div>
+    `;
+  }
+
+  function updateSpecialForm() {
+    const type = document.getElementById('special-type').value;
+    const label = document.getElementById('special-value-label');
+    const input = document.getElementById('special-value');
+    if (type === 'percent') {
+      label.textContent = 'Discount %';
+      input.value = 20;
+      input.max = 100;
+    } else {
+      label.textContent = 'Flat price (R)';
+      input.value = 50;
+      input.removeAttribute('max');
+    }
+  }
+
+  async function saveSpecialDate() {
+    const date = document.getElementById('special-date').value;
+    const type = document.getElementById('special-type').value;
+    const value = parseInt(document.getElementById('special-value').value, 10);
+    const caption = document.getElementById('special-caption').value.trim();
+
+    if (!date) { alert('Pick a date.'); return; }
+    if (isNaN(value) || value < 0) { alert('Enter a valid value.'); return; }
+
+    DATE_SPECIALS[date] = { type, value, caption };
+
+    const { error } = await db.from('settings').upsert({
+      id: 'date_specials',
+      value: DATE_SPECIALS,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) { alert('Could not save.'); console.error(error); return; }
+
+    document.getElementById('special-form-container').innerHTML = '';
+    renderSpecials();
+    loadSlots();
+    alert('Special saved!');
+  }
+
+  async function removeSpecial(date) {
+    if (!confirm(`Remove special on ${formatDateLong(date)}?`)) return;
+    delete DATE_SPECIALS[date];
+    const { error } = await db.from('settings').upsert({
+      id: 'date_specials',
+      value: DATE_SPECIALS,
+      updated_at: new Date().toISOString()
+    });
+    if (error) { alert('Could not remove.'); console.error(error); return; }
+    renderSpecials();
+    loadSlots();
+  }
+
+  // ============================================================
+  // CHANGE PASSWORD
+  // ============================================================
   async function changePassword() {
     const current = document.getElementById('pw-current').value;
     const newPw = document.getElementById('pw-new').value;
@@ -919,7 +1351,6 @@
 
     let correctPassword = ADMIN_PASSWORD;
     let hasStoredPassword = false;
-
     try {
       const { data } = await db.from('admin_auth').select('password').eq('id', 'main').single();
       if (data && data.password) { correctPassword = data.password; hasStoredPassword = true; }
@@ -927,7 +1358,6 @@
 
     const match = hasStoredPassword ? (current === correctPassword) : (current === ADMIN_PASSWORD);
     if (!match) return showPwMsg('Current password is wrong.', 'var(--red)');
-
     if (!newPw || newPw.length < 4) return showPwMsg('New password must be at least 4 characters.', 'var(--red)');
     if (newPw !== confirmPw) return showPwMsg("New passwords don't match.", 'var(--red)');
 
@@ -936,18 +1366,16 @@
       password: newPw,
       updated_at: new Date().toISOString()
     });
-
-    if (error) {
-      console.error(error);
-      return showPwMsg('Could not save. Check Supabase.', 'var(--red)');
-    }
-
+    if (error) { console.error(error); return showPwMsg('Could not save. Check Supabase.', 'var(--red)'); }
     showPwMsg('Password changed. The old password no longer works.', 'var(--green)');
     document.getElementById('pw-current').value = '';
     document.getElementById('pw-new').value = '';
     document.getElementById('pw-confirm').value = '';
   }
 
+  // ============================================================
+  // WEEK PLANNER
+  // ============================================================
   function changeWeek(delta) {
     currentWeekStart.setDate(currentWeekStart.getDate() + delta * 7);
     renderWeekPlanner();
@@ -983,7 +1411,7 @@
       const isCustomized = hasOverride && Object.prototype.hasOwnProperty.call(WEEK_OVERRIDES[mondayKey], dow);
 
       const row = document.createElement('div');
-      row.className = 'week-day-row' + (isCustomized ? ' customized' : '');
+      row.className = 'week-day-row';
       row.innerHTML = `
         <label>${DAY_NAMES[dow]}</label>
         <input type="text" id="week-day-${dow}" value="${slots.join(',')}" placeholder="Empty = closed" />
@@ -1025,13 +1453,7 @@
       value: WEEK_OVERRIDES,
       updated_at: new Date().toISOString()
     });
-
-    if (error) {
-      alert('Could not save. Check the console for details.');
-      console.error('Save week error:', error);
-      return;
-    }
-
+    if (error) { alert('Could not save.'); console.error(error); return; }
     alert('Week saved!');
     renderWeekPlanner();
     loadSlots();
@@ -1044,20 +1466,21 @@
       return;
     }
     if (!confirm('Reset this week to default hours?')) return;
-
     delete WEEK_OVERRIDES[mondayKey];
     const { error } = await db.from('settings').upsert({
       id: 'week_overrides',
       value: WEEK_OVERRIDES,
       updated_at: new Date().toISOString()
     });
-
     if (error) { alert('Could not save.'); console.error(error); return; }
     alert('Reset to default!');
     renderWeekPlanner();
     loadSlots();
   }
 
+  // ============================================================
+  // ADMIN BOOKINGS
+  // ============================================================
   async function renderAdmin() {
     const list = document.getElementById('admin-list');
     list.innerHTML = '<p style="color:#999;font-style:italic;">Loading…</p>';
@@ -1111,35 +1534,7 @@
     if (error) { alert('Could not cancel.'); return; }
     await renderAdmin(); await loadSlots();
   }
-  function renderPriceEditor() {
-    const editor = document.getElementById('price-editor');
-    editor.innerHTML = '';
-    SERVICES.forEach((svc, i) => {
-      const row = document.createElement('div');
-      row.className = 'edit-row';
-      const specialVal = svc.special != null ? svc.special : svc.price;
-      row.innerHTML = `
-        <label>${escapeHtml(svc.name)}<div class="field-hint">Normal / Special</div></label>
-        <input type="number" id="price-${i}" value="${svc.price}" min="0" step="5" placeholder="Normal" />
-        <input type="number" id="special-${i}" value="${specialVal}" min="0" step="5" placeholder="Special" />
-      `;
-      editor.appendChild(row);
-    });
-  }
-  async function savePrices() {
-    const updated = SERVICES.map((svc, i) => {
-      const normalVal = parseInt(document.getElementById('price-' + i).value, 10);
-      const specialVal = parseInt(document.getElementById('special-' + i).value, 10);
-      return {
-        ...svc,
-        price: isNaN(normalVal) ? svc.price : normalVal,
-        special: isNaN(specialVal) ? (svc.special != null ? svc.special : svc.price) : specialVal
-      };
-    });
-    const { error } = await db.from('settings').upsert({ id: 'services', value: updated, updated_at: new Date().toISOString() });
-    if (error) { alert('Could not save prices.'); console.error(error); return; }
-    SERVICES = updated; alert('Prices saved!');
-  }
+
   function showMsg(text, type) { msg.textContent = text; msg.className = 'show ' + type; }
   function hideMsg() { msg.className = ''; msg.textContent = ''; }
 
