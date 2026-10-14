@@ -177,16 +177,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--grey);
-    opacity: 0.55;
-    transition: opacity 0.15s, color 0.15s;
+    color: #000000;
+    opacity: 1;
+    transition: opacity 0.15s;
     z-index: 2;
     box-shadow: none !important;
     border-radius: 6px;
   }
   .eye-toggle:hover {
-    opacity: 1;
-    color: var(--ink);
+    opacity: 0.7;
+    color: #000000;
     background: transparent !important;
     transform: translateY(-50%) !important;
   }
@@ -194,13 +194,12 @@
     width: 20px;
     height: 20px;
     display: block;
-    stroke: currentColor;
+    stroke: #000000;
     fill: none;
-    stroke-width: 1.8;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-
   .week-nav { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--cream); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
   .week-nav button { width: 40px; height: 40px; padding: 0; margin: 0; font-size: 1.2rem; letter-spacing: 0; background: var(--ink); color: var(--cream); border-radius: 10px; font-family: 'Inter', sans-serif; flex-shrink: 0; }
   .week-nav button:hover { background: var(--gold); color: var(--white); }
