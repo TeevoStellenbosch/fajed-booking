@@ -153,7 +153,7 @@
   .login-error.show { display: block; }
   .footer { text-align: center; margin-top: 3rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: #bbb; }
 
-  /* EYE TOGGLE */
+  /* EYE TOGGLE — SVG icon */
   .pw-wrap {
     position: relative;
     display: block;
@@ -164,28 +164,41 @@
   }
   .eye-toggle {
     position: absolute;
-    right: 0.85rem;
+    right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     background: transparent !important;
-    border: none;
+    border: none !important;
     cursor: pointer;
-    font-size: 1.1rem;
-    width: auto !important;
+    width: 32px !important;
+    height: 32px !important;
     margin: 0 !important;
-    padding: 0.35rem !important;
-    line-height: 1;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--grey);
-    opacity: 0.6;
-    transition: opacity 0.15s;
+    opacity: 0.55;
+    transition: opacity 0.15s, color 0.15s;
     z-index: 2;
     box-shadow: none !important;
+    border-radius: 6px;
   }
   .eye-toggle:hover {
     opacity: 1;
-    background: transparent !important;
     color: var(--ink);
+    background: transparent !important;
     transform: translateY(-50%) !important;
+  }
+  .eye-toggle svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .week-nav { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--cream); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
@@ -317,7 +330,12 @@
       <div class="login-form">
         <div class="pw-wrap">
           <input type="password" id="admin-password" placeholder="Enter admin password" />
-          <button type="button" class="eye-toggle" onclick="toggleEye('admin-password', this)">👁</button>
+          <button type="button" class="eye-toggle" onclick="toggleEye('admin-password', this)" aria-label="Show password">
+            <svg viewBox="0 0 24 24" class="eye-open">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
         </div>
         <button onclick="adminLogin()" class="admin-save">Log In</button>
         <div class="login-error" id="login-error">Wrong password. Try again.</div>
@@ -367,21 +385,36 @@
           <label>Current password</label>
           <div class="pw-wrap" style="flex:1;">
             <input type="password" id="pw-current" placeholder="Enter current" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
-            <button type="button" class="eye-toggle" onclick="toggleEye('pw-current', this)">👁</button>
+            <button type="button" class="eye-toggle" onclick="toggleEye('pw-current', this)" aria-label="Show password">
+              <svg viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
         </div>
         <div class="edit-row">
           <label>New password</label>
           <div class="pw-wrap" style="flex:1;">
             <input type="password" id="pw-new" placeholder="Enter new" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
-            <button type="button" class="eye-toggle" onclick="toggleEye('pw-new', this)">👁</button>
+            <button type="button" class="eye-toggle" onclick="toggleEye('pw-new', this)" aria-label="Show password">
+              <svg viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
         </div>
         <div class="edit-row">
           <label>Confirm new</label>
           <div class="pw-wrap" style="flex:1;">
             <input type="password" id="pw-confirm" placeholder="Repeat new" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
-            <button type="button" class="eye-toggle" onclick="toggleEye('pw-confirm', this)">👁</button>
+            <button type="button" class="eye-toggle" onclick="toggleEye('pw-confirm', this)" aria-label="Show password">
+              <svg viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
         </div>
         <div id="pw-msg" style="margin-top:1rem;font-size:0.85rem;text-align:center;display:none;"></div>
@@ -446,17 +479,20 @@
   let popupTimer = null;
 
   // ============================================================
-  // EYE TOGGLE
+  // EYE TOGGLE — SVG icon swap
   // ============================================================
+  const EYE_OPEN = '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const EYE_CLOSED = '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
   function toggleEye(inputId, btn) {
     const input = document.getElementById(inputId);
     if (!input) return;
     if (input.type === 'password') {
       input.type = 'text';
-      btn.textContent = '🙈';
+      btn.innerHTML = EYE_CLOSED;
     } else {
       input.type = 'password';
-      btn.textContent = '👁';
+      btn.innerHTML = EYE_OPEN;
     }
   }
 
@@ -677,13 +713,13 @@
     setTimeout(() => {
       try {
         const barberMsg =
-          `💈 NEW BOOKING — ${SHOP_NAME}%0A` +
-          `👤 ${encodeURIComponent(name)}%0A` +
-          `📱 ${encodeURIComponent(cleanPhone)}%0A` +
-          `🕐 ${dayName} ${date} · ${range}%0A` +
-          `✂️ ${selectedService.name}%0A` +
-          `💰 R${selectedService.finalPrice}`;
-        window.open(`https://wa.me/${BARBER_NUMBER}?text=${barberMsg}`, '_blank');
+          `NEW BOOKING — ${SHOP_NAME}\n` +
+          `Name: ${name}\n` +
+          `Phone: ${cleanPhone}\n` +
+          `Time: ${dayName} ${date} · ${range}\n` +
+          `Service: ${selectedService.name}\n` +
+          `Price: R${selectedService.finalPrice}`;
+        window.open(`https://wa.me/${BARBER_NUMBER}?text=${encodeURIComponent(barberMsg)}`, '_blank');
       } catch (err) { console.log('Barber WhatsApp blocked.'); }
     }, 600);
   }
@@ -745,13 +781,13 @@
   function sendBookingToBarber() {
     if (!lastBooking) return;
     const msg =
-      `✅ BOOKING PROOF — ${SHOP_NAME}%0A%0A` +
-      `👤 ${encodeURIComponent(lastBooking.name)}%0A` +
-      `🕐 ${lastBooking.dayName} · ${lastBooking.range}%0A` +
-      `✂️ ${lastBooking.service}%0A` +
-      `💰 R${lastBooking.price}%0A%0A` +
+      `BOOKING PROOF — ${SHOP_NAME}\n\n` +
+      `Name: ${lastBooking.name}\n` +
+      `Time: ${lastBooking.dayName} · ${lastBooking.range}\n` +
+      `Service: ${lastBooking.service}\n` +
+      `Price: R${lastBooking.price}\n\n` +
       `This is my proof of booking.`;
-    window.open(`https://wa.me/${BARBER_NUMBER}?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${BARBER_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function launchConfetti() {
@@ -807,8 +843,8 @@
       const range = `${b.time} – ${endTime(b.time)}`;
       const free = isFreeCancellation(b.date, b.time);
       const tag = free
-        ? `<span class="policy-tag free">✓ Free cancellation</span>`
-        : `<span class="policy-tag fee">⚠ R${CANCEL_FEE} fee applies</span>`;
+        ? `<span class="policy-tag free">Free cancellation</span>`
+        : `<span class="policy-tag fee">R${CANCEL_FEE} fee applies</span>`;
       const row = document.createElement('div');
       row.className = 'my-booking-row';
       row.innerHTML = `
@@ -836,15 +872,15 @@
     const { dayName } = slotsForDate(booking.date);
     const range = `${booking.time} – ${endTime(booking.time)}`;
     const feeLine = free
-      ? `✅ Free cancellation (24+ hours notice)`
-      : `⚠️ Within 24 hours — R${CANCEL_FEE} fee applies`;
+      ? `Free cancellation (24+ hours notice)`
+      : `Within 24 hours — R${CANCEL_FEE} fee applies`;
     const msg =
-      `❌ CANCELLATION — ${SHOP_NAME}%0A%0A` +
-      `👤 ${encodeURIComponent(booking.name)}%0A` +
-      `🕐 ${dayName} ${booking.date} · ${range}%0A` +
-      `✂️ ${booking.service || ''}%0A%0A` +
+      `CANCELLATION — ${SHOP_NAME}\n\n` +
+      `Name: ${booking.name}\n` +
+      `Time: ${dayName} ${booking.date} · ${range}\n` +
+      `Service: ${booking.service || ''}\n\n` +
       `${feeLine}`;
-    const waUrl = `https://wa.me/${BARBER_NUMBER}?text=${msg}`;
+    const waUrl = `https://wa.me/${BARBER_NUMBER}?text=${encodeURIComponent(msg)}`;
 
     try { window.open(waUrl, '_blank'); } catch (e) { console.log('WhatsApp blocked:', e); }
 
@@ -910,6 +946,7 @@
       document.getElementById('pw-current').type = 'password';
       document.getElementById('pw-new').type = 'password';
       document.getElementById('pw-confirm').type = 'password';
+      document.querySelectorAll('.eye-toggle').forEach(btn => { btn.innerHTML = EYE_OPEN; });
     }
   }
 
@@ -950,7 +987,7 @@
       return showPwMsg('Could not save. Check Supabase.', 'var(--red)');
     }
 
-    showPwMsg('✅ Password changed! The old password no longer works.', 'var(--green)');
+    showPwMsg('Password changed. The old password no longer works.', 'var(--green)');
     document.getElementById('pw-current').value = '';
     document.getElementById('pw-new').value = '';
     document.getElementById('pw-confirm').value = '';
@@ -1095,7 +1132,7 @@
       const range = `${b.time} – ${endTime(b.time)}`;
       const row = document.createElement('div');
       row.className = 'booking-row';
-      row.innerHTML = `<div><strong>${escapeHtml(b.name)}</strong><div class="meta">${dayName} ${b.date} · ${range} · ${escapeHtml(b.phone)}</div>${b.service ? `<div class="svc">✂️ ${escapeHtml(b.service)} — R${b.price || ''}</div>` : ''}</div><button class="cancel-btn" onclick="cancelBooking('${b.id}')">Cancel</button>`;
+      row.innerHTML = `<div><strong>${escapeHtml(b.name)}</strong><div class="meta">${dayName} ${b.date} · ${range} · ${escapeHtml(b.phone)}</div>${b.service ? `<div class="svc">${escapeHtml(b.service)} — R${b.price || ''}</div>` : ''}</div><button class="cancel-btn" onclick="cancelBooking('${b.id}')">Cancel</button>`;
       list.appendChild(row);
     });
   }
@@ -1106,12 +1143,12 @@
       const { dayName } = slotsForDate(booking.date);
       const range = `${booking.time} – ${endTime(booking.time)}`;
       const msg =
-        `❌ BARBER CANCELLED — ${SHOP_NAME}%0A%0A` +
-        `👤 ${encodeURIComponent(booking.name)}%0A` +
-        `🕐 ${dayName} ${booking.date} · ${range}%0A` +
-        `✂️ ${booking.service || ''}%0A%0A` +
+        `BARBER CANCELLED — ${SHOP_NAME}\n\n` +
+        `Name: ${booking.name}\n` +
+        `Time: ${dayName} ${booking.date} · ${range}\n` +
+        `Service: ${booking.service || ''}\n\n` +
         `Your booking has been cancelled.`;
-      try { window.open(`https://wa.me/${booking.phone}?text=${msg}`, '_blank'); } catch (e) { console.log(e); }
+      try { window.open(`https://wa.me/${booking.phone}?text=${encodeURIComponent(msg)}`, '_blank'); } catch (e) { console.log(e); }
     }
     const { error } = await db.from('bookings').delete().eq('id', id);
     if (error) { alert('Could not cancel.'); return; }
