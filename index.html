@@ -153,6 +153,41 @@
   .login-error.show { display: block; }
   .footer { text-align: center; margin-top: 3rem; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: #bbb; }
 
+  /* EYE TOGGLE */
+  .pw-wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .pw-wrap input {
+    padding-right: 3rem !important;
+  }
+  .eye-toggle {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent !important;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0.35rem !important;
+    line-height: 1;
+    color: var(--grey);
+    opacity: 0.6;
+    transition: opacity 0.15s;
+    z-index: 2;
+    box-shadow: none !important;
+  }
+  .eye-toggle:hover {
+    opacity: 1;
+    background: transparent !important;
+    color: var(--ink);
+    transform: translateY(-50%) !important;
+  }
+
   .week-nav { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--cream); border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 1rem; }
   .week-nav button { width: 40px; height: 40px; padding: 0; margin: 0; font-size: 1.2rem; letter-spacing: 0; background: var(--ink); color: var(--cream); border-radius: 10px; font-family: 'Inter', sans-serif; flex-shrink: 0; }
   .week-nav button:hover { background: var(--gold); color: var(--white); }
@@ -280,7 +315,10 @@
     <div id="admin-login">
       <h3>Admin Login</h3>
       <div class="login-form">
-        <input type="password" id="admin-password" placeholder="Enter admin password" />
+        <div class="pw-wrap">
+          <input type="password" id="admin-password" placeholder="Enter admin password" />
+          <button type="button" class="eye-toggle" onclick="toggleEye('admin-password', this)">👁</button>
+        </div>
         <button onclick="adminLogin()" class="admin-save">Log In</button>
         <div class="login-error" id="login-error">Wrong password. Try again.</div>
       </div>
@@ -327,15 +365,24 @@
         <p style="font-size:0.85rem;color:var(--grey);margin-bottom:1rem;">Change the admin password. It's stored securely in the database.</p>
         <div class="edit-row">
           <label>Current password</label>
-          <input type="password" id="pw-current" placeholder="Enter current" style="width:100%;text-align:left;padding:0.7rem 0.9rem;font-size:0.9rem;" />
+          <div class="pw-wrap" style="flex:1;">
+            <input type="password" id="pw-current" placeholder="Enter current" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
+            <button type="button" class="eye-toggle" onclick="toggleEye('pw-current', this)">👁</button>
+          </div>
         </div>
         <div class="edit-row">
           <label>New password</label>
-          <input type="password" id="pw-new" placeholder="Enter new" style="width:100%;text-align:left;padding:0.7rem 0.9rem;font-size:0.9rem;" />
+          <div class="pw-wrap" style="flex:1;">
+            <input type="password" id="pw-new" placeholder="Enter new" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
+            <button type="button" class="eye-toggle" onclick="toggleEye('pw-new', this)">👁</button>
+          </div>
         </div>
         <div class="edit-row">
           <label>Confirm new</label>
-          <input type="password" id="pw-confirm" placeholder="Repeat new" style="width:100%;text-align:left;padding:0.7rem 0.9rem;font-size:0.9rem;" />
+          <div class="pw-wrap" style="flex:1;">
+            <input type="password" id="pw-confirm" placeholder="Repeat new" style="width:100%;text-align:left;padding:0.7rem 3rem 0.7rem 0.9rem;font-size:0.9rem;" />
+            <button type="button" class="eye-toggle" onclick="toggleEye('pw-confirm', this)">👁</button>
+          </div>
         </div>
         <div id="pw-msg" style="margin-top:1rem;font-size:0.85rem;text-align:center;display:none;"></div>
         <button onclick="changePassword()" class="admin-save">Change Password</button>
@@ -370,7 +417,7 @@
 <script>
   const SHOP_NAME = 'FAJED';
   const BARBER_NUMBER = '27623159253';
-  const ADMIN_PASSWORD = 'fajed2020'; // First-time password — stops working once barber changes it
+  const ADMIN_PASSWORD = 'fajed2020';
   const SUPABASE_URL = 'https://ewxvtksigbujywuckzjv.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_KloaqB1JdrvWheEomwncew_IaXeCAFa';
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -397,6 +444,21 @@
   let currentWeekStart = null;
   let lastBooking = null;
   let popupTimer = null;
+
+  // ============================================================
+  // EYE TOGGLE
+  // ============================================================
+  function toggleEye(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    if (input.type === 'password') {
+      input.type = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      btn.textContent = '👁';
+    }
+  }
 
   function getMonday(date) {
     const d = new Date(date);
@@ -800,7 +862,6 @@
     if (panel.classList.contains('show') && isAdminLoggedIn) renderAdmin();
   }
 
-  // ⭐ CHANGED — the default password only works until the barber sets his own
   async function adminLogin() {
     const pw = document.getElementById('admin-password').value;
 
@@ -815,8 +876,6 @@
       }
     } catch (e) { console.warn('No stored password, using default'); }
 
-    // If a custom password exists in Supabase → ONLY that works.
-    // If none exists → the default fajed2020 works (one-time).
     const match = hasStoredPassword ? (pw === correctPassword) : (pw === ADMIN_PASSWORD);
 
     if (match) {
@@ -848,10 +907,12 @@
       document.getElementById('pw-new').value = '';
       document.getElementById('pw-confirm').value = '';
       document.getElementById('pw-msg').style.display = 'none';
+      document.getElementById('pw-current').type = 'password';
+      document.getElementById('pw-new').type = 'password';
+      document.getElementById('pw-confirm').type = 'password';
     }
   }
 
-  // ⭐ CHANGED — only the current password works (no fallback)
   async function changePassword() {
     const current = document.getElementById('pw-current').value;
     const newPw = document.getElementById('pw-new').value;
@@ -872,18 +933,11 @@
       if (data && data.password) { correctPassword = data.password; hasStoredPassword = true; }
     } catch (e) { /* use default */ }
 
-    // Verify current password
     const match = hasStoredPassword ? (current === correctPassword) : (current === ADMIN_PASSWORD);
-    if (!match) {
-      return showPwMsg('Current password is wrong.', 'var(--red)');
-    }
+    if (!match) return showPwMsg('Current password is wrong.', 'var(--red)');
 
-    if (!newPw || newPw.length < 4) {
-      return showPwMsg('New password must be at least 4 characters.', 'var(--red)');
-    }
-    if (newPw !== confirmPw) {
-      return showPwMsg("New passwords don't match.", 'var(--red)');
-    }
+    if (!newPw || newPw.length < 4) return showPwMsg('New password must be at least 4 characters.', 'var(--red)');
+    if (newPw !== confirmPw) return showPwMsg("New passwords don't match.", 'var(--red)');
 
     const { error } = await db.from('admin_auth').upsert({
       id: 'main',
